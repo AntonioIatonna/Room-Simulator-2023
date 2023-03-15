@@ -1,6 +1,4 @@
-package FinalProject.ModellingThe3DWorld.codes280;
-
-// package codes280;
+package Project;
 
 
 import java.awt.BorderLayout;
@@ -25,10 +23,11 @@ public class RoomSimulator extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
+	private static String fileFormat = "Project/"; // change this variable to whatever the file system requires on your computer
     
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
-		String filename = "FinalProject/ModellingThe3DWorld/codes280/Images/" + fn;
+		String filename = fileFormat + "Images/" + fn;
 		TextureLoader loader = new TextureLoader(filename, null);
 		ImageComponent2D image = loader.getImage();
 
@@ -51,7 +50,7 @@ public class RoomSimulator extends JPanel {
 		ObjectFile f = new ObjectFile(ObjectFile.RESIZE, (float) (60 * Math.PI / 180.0));
 		Scene s = null;
 		try {                                              // load object's definition file to 's'
-			s = f.load("FinalProject/ModellingThe3DWorld/codes280/Objects/" + obj_name + ".obj");
+			s = f.load(fileFormat + "Objects/" + obj_name + ".obj");
 		} catch (FileNotFoundException e) {
 			System.err.println(e);
 			System.exit(1);
