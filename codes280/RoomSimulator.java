@@ -1,4 +1,4 @@
-package Project;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 
 import java.awt.BorderLayout;
@@ -15,6 +15,7 @@ import org.jogamp.java3d.loaders.ParsingErrorException;
 import org.jogamp.java3d.loaders.Scene;
 import org.jogamp.java3d.loaders.objectfile.ObjectFile;
 import org.jogamp.java3d.utils.geometry.Box;
+import org.jogamp.java3d.utils.geometry.Primitive;
 import org.jogamp.java3d.utils.image.TextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
 import org.jogamp.vecmath.*;
@@ -23,7 +24,7 @@ public class RoomSimulator extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
-	private static String fileFormat = "Project/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -68,25 +69,12 @@ public class RoomSimulator extends JPanel {
 	/* a function to create the desk Room
 	 * Created walls and floors seperately so we can easily set the texture of the floor and walls
 	 */
-	private static TransformGroup createRoom() {
 
-		TransformGroup roomTG = new TransformGroup();
-
-		Transform3D trsm_wall1 = new Transform3D();
-		Transform3D trsm_wall2 = new Transform3D();
-		Transform3D trsm_floor = new Transform3D();
-
-		trsm_wall1.setTranslation(new Vector3f(0.0f, -0.2f, -2.2f));
-		trsm_wall2.setTranslation(new Vector3f(-2.2f, -0.2f, 0.0f));
-		trsm_floor.setTranslation(new Vector3f(0.0f, -2.0f, 0.0f));
-
-		
-
-		// Add Textures:
-		Appearance appFloor = Commons.obj_Appearance(Commons.Cyan);
+	private static Appearance makeTexture(String file){
+		Appearance appTemp = Commons.obj_Appearance(Commons.Cyan);
 		// Set Transparency
 		TransparencyAttributes transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
-		appFloor.setTransparencyAttributes(transparency);
+		appTemp.setTransparencyAttributes(transparency);
 		
 
 		
@@ -96,24 +84,49 @@ public class RoomSimulator extends JPanel {
 
 		TextureAttributes ta = new TextureAttributes();
 		ta.setTextureMode(TextureAttributes.MODULATE);
-		array[0] = texState("floor1.jpg", ta, tcg);
+		array[0] = texState(file, ta, tcg);
 		// Set Textures and polygon
 		PolygonAttributes polyAtt = new PolygonAttributes();
 		polyAtt.setCullFace(PolygonAttributes.CULL_NONE);
-		appFloor.setPolygonAttributes(polyAtt);
-		appFloor.setTextureUnitState(array);
+		appTemp.setPolygonAttributes(polyAtt);
+		appTemp.setTextureUnitState(array);
+
+		return appTemp;
+	}
+
+	private static TransformGroup createRoom() {
+
+		Float x = 4.0f;
+		Float y = 3.0f;
+		Float z = 3.0f;
+		Float depth = 0.2f;
+
+		TransformGroup roomTG = new TransformGroup();
+
+		Transform3D trsm_wall1 = new Transform3D();
+		Transform3D trsm_wall2 = new Transform3D();
+		Transform3D trsm_floor = new Transform3D();
+
+		trsm_wall1.setTranslation(new Vector3f(0.0f, -(depth), -(depth + z)));
+		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
+		trsm_floor.setTranslation(new Vector3f(0.0f, -(y), 0.0f));
+
+		
+
+		// Add Textures:
+
 
 		TransformGroup floor = new TransformGroup();
-		floor.addChild(new Box(2.0f, 0.2f, 2.0f, appFloor));
+		floor.addChild(new Box(x, depth, z,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("floor1.jpg")));
 		floor.setTransform(trsm_floor);
 		
 
 		TransformGroup wall1 = new TransformGroup();
-		wall1.addChild(new Box(2.0f, 2.0f, 0.2f, Commons.obj_Appearance(Commons.Green)));
+		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
 		wall1.setTransform(trsm_wall1);
 
 		TransformGroup wall2 = new TransformGroup();
-		wall2.addChild(new Box(0.2f, 2.0f, 2.0f, Commons.obj_Appearance(Commons.Green)));
+		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
 		wall2.setTransform(trsm_wall2);
 
 
@@ -147,15 +160,15 @@ public class RoomSimulator extends JPanel {
 		Canvas3D canvas = new Canvas3D(config);
 		
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
-		Commons.define_Viewer(su, new Point3d(0.25d, 0.25d, 10.0d));   // set the viewer's location
+		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
 		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
-		// sceneBG.compile();		                           // optimize the BranchGroup
+		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
 
 		setLayout(new BorderLayout());
 		add("Center", canvas);
-		frame.setSize(800, 800);                           // set the size of the JFrame
+		frame.setSize(1920, 1080);                           // set the size of the JFrame
 		frame.setVisible(true);
 	}
 
