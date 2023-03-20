@@ -2,7 +2,9 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
+// package codesAI280;
+
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,7 +36,7 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	private static JFrame frame;
 	private Canvas3D canvas;
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -162,7 +164,7 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	/* NOTE: Keep the constructor for each of the labs and assignments */
 	public RoomSimulator(BranchGroup sceneBG) {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		Canvas3D canvas = new Canvas3D(config);
+		canvas = new Canvas3D(config);
 		canvas.addMouseListener(this);                     // NOTE: enable mouse clicking
 		
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
