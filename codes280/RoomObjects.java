@@ -2,7 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
+
 
 import java.io.FileNotFoundException;
 
@@ -11,15 +12,22 @@ import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.ImageComponent2D;
 import org.jogamp.java3d.Material;
+import org.jogamp.java3d.PolygonAttributes;
 import org.jogamp.java3d.Shape3D;
+import org.jogamp.java3d.TexCoordGeneration;
 import org.jogamp.java3d.Texture;
 import org.jogamp.java3d.Texture2D;
+import org.jogamp.java3d.TextureAttributes;
+import org.jogamp.java3d.TextureUnitState;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
+import org.jogamp.java3d.TransparencyAttributes;
 import org.jogamp.java3d.loaders.IncorrectFormatException;
 import org.jogamp.java3d.loaders.ParsingErrorException;
 import org.jogamp.java3d.loaders.Scene;
 import org.jogamp.java3d.loaders.objectfile.ObjectFile;
+import org.jogamp.java3d.utils.geometry.Box;
+import org.jogamp.java3d.utils.geometry.Primitive;
 import org.jogamp.java3d.utils.image.TextureLoader;
 import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Vector3f;
@@ -35,7 +43,7 @@ public abstract class RoomObjects {
 	protected double scale;                                // use 'scale' to define scaling
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
-    private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+    private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -88,6 +96,49 @@ public abstract class RoomObjects {
 		app.setMaterial(mtl);                              // set appearance's material
 		obj_shape.setAppearance(app);                      // set object's appearance
 	}	
+
+	protected Appearance makeTexture(String file){
+		Appearance appTemp = Commons.obj_Appearance(Commons.Cyan);
+		// Set Transparency
+		TransparencyAttributes transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
+		appTemp.setTransparencyAttributes(transparency);
+		
+		TextureUnitState[] array = new TextureUnitState[1];
+		TexCoordGeneration tcg = new TexCoordGeneration();
+		tcg.setEnable(false);
+
+		TextureAttributes ta = new TextureAttributes();
+		ta.setTextureMode(TextureAttributes.MODULATE);
+		array[0] = texState(file, ta, tcg);
+
+		// Set Textures and polygon
+		PolygonAttributes polyAtt = new PolygonAttributes();
+		polyAtt.setCullFace(PolygonAttributes.CULL_NONE);
+		appTemp.setPolygonAttributes(polyAtt);
+		appTemp.setTextureUnitState(array);
+
+		return appTemp;
+	}
+	protected TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
+		// Loads image:
+		String filename = fileFormat + "Images/" + fn;
+		TextureLoader loader = new TextureLoader(filename, null);
+		ImageComponent2D image = loader.getImage();
+
+		// Confirm if image exists:
+		if (image == null)
+		System.out.println("load failed for texture: " + filename);
+
+		// Set Width, Height and Textures:
+		Texture2D texture = new Texture2D(Texture.BASE_LEVEL, 
+		Texture.RGBA, image.getWidth(), image.getHeight());
+		texture.setImage(0, image);
+		TextureUnitState tt_State = new TextureUnitState(texture, ta, tcg);
+		tt_State.setCapability(TextureUnitState.ALLOW_STATE_WRITE);
+		
+		// Return image
+		return tt_State;
+	}
 }
 class TableObject extends RoomObjects{
 	public TableObject() {
@@ -137,7 +188,7 @@ class RightSpeaker extends RoomObjects{
 	public RightSpeaker() {
 		scale = 1.2d;                                        // use to scale up/down original size
 		post = new Vector3f(0f,0f,2.3f);                   // use to move object for positioning  
-		transform_Object("RightSpeaker");                      // set transformation to 'objTG' and load object file
+		transform_Object("rightSpeaker");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color 		                                              
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
@@ -298,4 +349,39 @@ class tableWhiteMat extends RoomObjects{
 	public void add_Child(TransformGroup nextTG) {
 		objTG.addChild(nextTG);   
 	}
+}
+
+
+class PictureFrame extends RoomObjects{
+	public PictureFrame() {
+		scale = 1.0d;                                        // use to scale up/down original size
+		post = new Vector3f(0.0f,0f,0f);                   // use to move object for positioning  
+		transform_Object("frame");                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = Commons.Brown; // set  color 		                                              
+		obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+	
+	public TransformGroup position_Object() {
+		Transform3D translator = new Transform3D();        
+		translator.setTranslation(new Vector3f(0.0f, 0.0f,-2.5f));
+		Transform3D rotator = new Transform3D();           
+		rotator.rotX(Math.PI / 2 * 3);
+		Transform3D trfm = new Transform3D();              
+		trfm.mul(translator);                             
+		trfm.mul(rotator);
+		objTG = new TransformGroup(trfm);  
+		objTG.addChild(objBG);     
+		
+		// Image Inside:
+		TransformGroup pic = new TransformGroup();
+		pic.addChild(new Box(0.35f,0.01f,0.55f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("picture1.jpg")));
+		add_Child(pic);
+
+		return objTG;                                     
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);   
+	}
+
 }

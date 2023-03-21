@@ -49,6 +49,7 @@ public class Commons extends JPanel {
 	public final static Color3f White = new Color3f(1.0f, 1.0f, 1.0f);
 	public final static Color3f Grey = new Color3f(0.35f, 0.35f, 0.35f);
 	public final static Color3f Black = new Color3f(0.0f, 0.0f, 0.0f);
+	public final static Color3f Brown = new Color3f(0.27f, 0.13f, 0.08f);
 	public final static Color3f[] clr_list = {Blue, Green, Red, Yellow,
 			Cyan, Orange, Magenta, Grey};
 	public final static int clr_num = 8;

@@ -2,9 +2,7 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-
-package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -35,14 +33,13 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	private static JFrame frame;
 	private Canvas3D canvas;
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static final int OBJ_NUM = 10;
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+    private static final int OBJ_NUM = 10;
+// declare transform groups for all objects with chaanging textures here
+	static TransformGroup floor;
+	static TransformGroup wall1;
+	static TransformGroup wall2;
 
-	// declare transform groups for all objects with chaanging textures here
-	static TransformGroup floor = new TransformGroup();
-	static TransformGroup wall1 = new TransformGroup();
-	static TransformGroup wall2 = new TransformGroup();
-    
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
 		String filename = fileFormat + "Images/" + fn;
@@ -117,6 +114,10 @@ public class RoomSimulator extends JPanel implements MouseListener{
 
 		TransformGroup roomTG = new TransformGroup();
 
+		floor = new TransformGroup();
+		wall1 = new TransformGroup();
+		wall2 = new TransformGroup();
+
 		Transform3D trsm_wall1 = new Transform3D();
 		Transform3D trsm_wall2 = new Transform3D();
 		Transform3D trsm_floor = new Transform3D();
@@ -134,6 +135,11 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		roomObjects[6] = new CPU();
 		roomObjects[7] = new Chair();
 		roomObjects[8] = new tableWhiteMat();
+
+		roomObjects[9] = new PictureFrame();
+
+
+
 		
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
@@ -149,6 +155,8 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		roomTG.addChild(roomObjects[6].position_Object());
 		roomTG.addChild(roomObjects[7].position_Object());
 		roomTG.addChild(roomObjects[8].position_Object());
+
+		roomTG.addChild(roomObjects[9].position_Object());
 
 		trsm_wall1.setTranslation(new Vector3f(0.0f, -(depth), -(depth + z)));
 		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
@@ -191,13 +199,13 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	/* NOTE: Keep the constructor for each of the labs and assignments */
 	public RoomSimulator(BranchGroup sceneBG) {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		canvas = new Canvas3D(config);
+		Canvas3D canvas = new Canvas3D(config);
 		canvas.addMouseListener(this);                     // NOTE: enable mouse clicking
 		
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
-		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
+		sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
 
