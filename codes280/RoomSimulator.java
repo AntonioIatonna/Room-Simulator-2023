@@ -4,10 +4,9 @@ the repository folder, replacing the old ones. Please make sure previously worki
 */
 // package codesAI280;
 
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.io.FileNotFoundException;
 
@@ -36,7 +35,13 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	private static JFrame frame;
 	private Canvas3D canvas;
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static final int OBJ_NUM = 10;
+
+	// declare transform groups for all objects with chaanging textures here
+	static TransformGroup floor = new TransformGroup();
+	static TransformGroup wall1 = new TransformGroup();
+	static TransformGroup wall2 = new TransformGroup();
     
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -78,17 +83,14 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	}
 	
 
-	/* a function to create the desk Room
+	/* a function to create the Room
 	 * Created walls and floors seperately so we can easily set the texture of the floor and walls
 	 */
-
 	private static Appearance makeTexture(String file){
 		Appearance appTemp = Commons.obj_Appearance(Commons.Cyan);
 		// Set Transparency
 		TransparencyAttributes transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
 		appTemp.setTransparencyAttributes(transparency);
-		
-
 		
 		TextureUnitState[] array = new TextureUnitState[1];
 		TexCoordGeneration tcg = new TexCoordGeneration();
@@ -97,6 +99,7 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		TextureAttributes ta = new TextureAttributes();
 		ta.setTextureMode(TextureAttributes.MODULATE);
 		array[0] = texState(file, ta, tcg);
+
 		// Set Textures and polygon
 		PolygonAttributes polyAtt = new PolygonAttributes();
 		polyAtt.setCullFace(PolygonAttributes.CULL_NONE);
@@ -107,7 +110,6 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	}
 
 	private static TransformGroup createRoom() {
-
 		Float x = 4.0f;
 		Float y = 3.0f;
 		Float z = 3.0f;
@@ -118,22 +120,47 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		Transform3D trsm_wall1 = new Transform3D();
 		Transform3D trsm_wall2 = new Transform3D();
 		Transform3D trsm_floor = new Transform3D();
+		Transform3D tableTex = new Transform3D();
+
+		RoomObjects[] roomObjects = new RoomObjects[OBJ_NUM];
+		TransformGroup desktop_Items = new TransformGroup();
+		
+		roomObjects[0] = new TableObject(); //For table
+		roomObjects[1] = new LeftSpeaker(); //Left speaker
+		roomObjects[2] = new RightSpeaker(); //right speaker
+		roomObjects[3] = new tableMat(); //Table Mat
+		roomObjects[4] = new rightScreen();
+		roomObjects[5] = new leftScreen();
+		roomObjects[6] = new CPU();
+		roomObjects[7] = new Chair();
+		roomObjects[8] = new tableWhiteMat();
+		
+		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
+		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
+		desktop_Items.setTransform(tableTex);
+		
+		roomTG.addChild(desktop_Items);
+		roomTG.addChild(roomObjects[0].position_Object());
+		roomTG.addChild(roomObjects[1].position_Object());
+		roomTG.addChild(roomObjects[2].position_Object());
+		roomTG.addChild(roomObjects[3].position_Object());
+		roomTG.addChild(roomObjects[4].position_Object());
+		roomTG.addChild(roomObjects[5].position_Object());
+		roomTG.addChild(roomObjects[6].position_Object());
+		roomTG.addChild(roomObjects[7].position_Object());
+		roomTG.addChild(roomObjects[8].position_Object());
 
 		trsm_wall1.setTranslation(new Vector3f(0.0f, -(depth), -(depth + z)));
 		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
 		trsm_floor.setTranslation(new Vector3f(0.0f, -(y), 0.0f));
 
 		// Add Textures:
-
-		TransformGroup floor = new TransformGroup();
 		floor.addChild(new Box(x, depth, z,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("floor1.jpg")));
 		floor.setTransform(trsm_floor);
-
-		TransformGroup wall1 = new TransformGroup();
+		
 		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
 		wall1.setTransform(trsm_wall1);
 
-		TransformGroup wall2 = new TransformGroup();
 		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
 		wall2.setTransform(trsm_wall2);
 
@@ -204,20 +231,15 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		mouseVec.normalize();
 		pickTool.setShapeRay(point3d, mouseVec);           // send a PickRay for intersection
 
-		if (pickTool.pickClosest() != null) {
+		if(pickTool.pickClosest() != null) {
             PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
-            Shape3D clicked = (Shape3D) pickResult.getNode(PickResult.SHAPE3D);
-			System.out.println(clicked);
-            // Appearance app = new Appearance();             // originally a PRIMITIVE as a box
-            // if(clicked.equals(ring1.getShape3D())){
-			// 	RotationInterpolator R = (RotationInterpolator) sceneBG.getChild(3);
-			// 	if(! R.getAlpha().isPaused()){
-			// 		R.getAlpha().pause();
-			// 	}
-			// 	else{
-			// 		R.getAlpha().resume();
-			// 	}
-			// }
+            Node clicked = pickResult.getNode(PickResult.PRIMITIVE);
+            if(clicked.equals(wall1.getChild(0)) || clicked.equals(wall2.getChild(0))){
+				// change wall texture
+			}
+			else if(clicked.equals(floor.getChild(0))){
+				// change floor texture
+			}
         } 
 	}
 
@@ -226,4 +248,3 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	public void mousePressed(MouseEvent e) { }
 	public void mouseReleased(MouseEvent e) { }
 }
-
