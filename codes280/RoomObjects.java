@@ -5,6 +5,7 @@ the repository folder, replacing the old ones. Please make sure previously worki
 package codesAI280;
 
 
+import java.awt.Shape;
 import java.io.FileNotFoundException;
 
 import org.jogamp.java3d.Alpha;
@@ -13,6 +14,7 @@ import org.jogamp.java3d.BoundingSphere;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.ImageComponent2D;
 import org.jogamp.java3d.Material;
+import org.jogamp.java3d.Node;
 import org.jogamp.java3d.PolygonAttributes;
 import org.jogamp.java3d.RotationInterpolator;
 import org.jogamp.java3d.Shape3D;
@@ -54,6 +56,8 @@ public abstract class RoomObjects {
 	
 	public Alpha get_Alpha() { return rotationAlpha; };    // NOTE: keep for future use 
 	public Alpha get_Alpha2() { return rotationAlpha2; };    // NOTE: keep for future use 
+
+
 
 
 	private Scene loadShape(String obj_name) {
@@ -111,51 +115,49 @@ public abstract class RoomObjects {
 		mtl.setLightingEnable(true);
 
 		app.setMaterial(mtl);                              // set appearance's material
+
+
+
+
 		obj_shape.setAppearance(app);                      // set object's appearance
 	}	
 
-	protected Appearance makeTexture(String file){
-		Appearance appTemp = Commons.obj_Appearance(Commons.Cyan);
-		// Set Transparency
-		TransparencyAttributes transparency = new TransparencyAttributes(TransparencyAttributes.SCREEN_DOOR, 0.0f);
-		appTemp.setTransparencyAttributes(transparency);
-		
-		TextureUnitState[] array = new TextureUnitState[1];
-		TexCoordGeneration tcg = new TexCoordGeneration();
-		tcg.setEnable(false);
+	protected static Appearance makeTexture(String name)
+    {
+       Appearance          appearance;       
+       ImageComponent2D    image;       
+       Texture2D           texture;       
+       TextureLoader       textureLoader;
+     
+	   int flags = Appearance.ALLOW_TEXTURE_READ
+	   | Appearance.ALLOW_TEXTURE_WRITE
+	   | Texture.ALLOW_ENABLE_READ
+	   | Texture.ALLOW_ENABLE_WRITE
+	   | Texture2D.ALLOW_ENABLE_READ
+	   | Texture2D.ALLOW_ENABLE_WRITE
+	   ;
+	   
+       // Load the image
+       textureLoader = new TextureLoader(fileFormat + "Images/" + name, null);
+       image         = textureLoader.getImage();
 
-		TextureAttributes ta = new TextureAttributes();
-		ta.setTextureMode(TextureAttributes.MODULATE);
-		array[0] = texState(file, ta, tcg);
 
-		// Set Textures and polygon
-		PolygonAttributes polyAtt = new PolygonAttributes();
-		polyAtt.setCullFace(PolygonAttributes.CULL_NONE);
-		appTemp.setPolygonAttributes(polyAtt);
-		appTemp.setTextureUnitState(array);
+       // Create the Texture
+	
+       texture       = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
+                                     image.getWidth(), image.getHeight());
+       texture.setImage(0, image);  // Level 0 indicates no mip-mapping
 
-		return appTemp;
-	}
-	protected TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
-		// Loads image:
-		String filename = fileFormat + "Images/" + fn;
-		TextureLoader loader = new TextureLoader(filename, null);
-		ImageComponent2D image = loader.getImage();
+       // Create the Appearance
+       appearance    = new Appearance();
+	   appearance.setCapability(flags);
+       appearance.setTexture(texture);
+       
 
-		// Confirm if image exists:
-		if (image == null)
-		System.out.println("load failed for texture: " + filename);
+       return appearance;       
+    }
 
-		// Set Width, Height and Textures:
-		Texture2D texture = new Texture2D(Texture.BASE_LEVEL, 
-		Texture.RGBA, image.getWidth(), image.getHeight());
-		texture.setImage(0, image);
-		TextureUnitState tt_State = new TextureUnitState(texture, ta, tcg);
-		tt_State.setCapability(TextureUnitState.ALLOW_STATE_WRITE);
-		
-		// Return image
-		return tt_State;
-	}
+	
 }
 class TableObject extends RoomObjects{
 	public TableObject() {
@@ -445,14 +447,21 @@ class Walls_Floors extends RoomObjects{
 		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
 		trsm_floor.setTranslation(new Vector3f(0.0f, -(y), 0.0f));
 
+
+		int flags = Primitive.GENERATE_TEXTURE_COORDS 
+		| Primitive.ENABLE_GEOMETRY_PICKING 
+		| Box.ENABLE_APPEARANCE_MODIFY;
+
 		// Add Textures:
-		floor.addChild(new Box(x, depth, z,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("floor1.jpg")));
+		floor.addChild(new Box(x, depth, z, flags, makeTexture("floor1.jpg")));
 		floor.setTransform(trsm_floor);
 		
-		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
+
+
+		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS | Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall1.jpg")));
 		wall1.setTransform(trsm_wall1);
 
-		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
+		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS| Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall1.jpg")));
 		wall2.setTransform(trsm_wall2);
 
         objBG.addChild(floor);
@@ -492,6 +501,17 @@ class Walls_Floors extends RoomObjects{
 
 		objBG.addChild(rotateInterpol);
 		// objBG.addChild(rotateInterpol2);
+	}
+
+	public Node getFloor(){
+		return floor.getChild(0);
+	}
+
+	public Node getWall1(){
+		return wall1.getChild(0);
+	}
+	public Node getWall2(){
+		return wall2.getChild(0);
 	}
 
 	public void add_Child(TransformGroup nextTG) {

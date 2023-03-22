@@ -30,22 +30,22 @@ import org.jogamp.vecmath.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
+public class RoomSimulator extends JPanel implements MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
 	private Canvas3D canvas;
+
 	private static PickTool pickTool;
 	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
-// declare transform groups for all objects with chaanging textures here
-	// static TransformGroup floor;
-	// static TransformGroup wall1;
-	// static TransformGroup wall2;
 
 	static Boolean pressed;
 	static Boolean pressed_left;
 	static RoomObjects[] roomObjects;
+
+	static String floorNames[];
+	static int currentFloor;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -169,9 +169,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomTG.addChild(roomObjects[9].position_Object());
 		roomTG.addChild(roomObjects[10].position_Object());
 
-		Alpha a = roomObjects[10].get_Alpha();
-		a.pause();
+		// Alpha a = roomObjects[10].get_Alpha();
+		// a.pause();
 
+		// Alpha b = roomObjects[10].get_Alpha2();
+		// b.pause();
 		// Alpha b = roomObjects[10].get_Alpha2();
 		// b.pause();
 		
@@ -198,13 +200,21 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	/* NOTE: Keep the constructor for each of the labs and assignments */
 	public RoomSimulator(BranchGroup sceneBG) {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		Canvas3D canvas = new Canvas3D(config);
+		canvas = new Canvas3D(config);
 		canvas.addMouseListener(this);                     // NOTE: enable mouse clicking
 		
-		canvas.addKeyListener(this);
+		// canvas.addKeyListener(this);
 		pressed = false;
 		pressed_left = false;
 
+		// Set Strings for Textures:
+		floorNames = new String[4];
+		floorNames[0] = "floor1.jpg";
+		floorNames[1] = "floor2.jpg";
+		floorNames[2] = "floor3.jpg";
+		floorNames[3] = "floor4.jpg";
+		
+		currentFloor = 0;
 
 
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
@@ -227,33 +237,59 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	public static void changeAppearance(Appearance app, String fileName){
+		ImageComponent2D    image;       
+		Texture2D           texture;       
+		TextureLoader       textureLoader;
+		
+		// Load the image
+		textureLoader = new TextureLoader(fileFormat + "Images/" + fileName, null);
+		image         = textureLoader.getImage();
+	
+	
+		// Create the Texture
+		texture       = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
+										image.getWidth(), image.getHeight());
+		texture.setImage(0, image);  // Level 0 indicates no mip-mapping
+		// Create the Appearance
+		app.setTexture(texture);
+	}
+	
+
 	@Override
 	public void mouseClicked(MouseEvent event) {
-		// int x = event.getX(); int y = event.getY();        // mouse coordinates
-		// Point3d point3d = new Point3d(), center = new Point3d();
-		// canvas.getPixelLocationInImagePlate(x, y, point3d);// obtain AWT pixel in ImagePlate coordinates
-		// canvas.getCenterEyeInImagePlate(center);           // obtain eye's position in IP coordinates
+		int x = event.getX(); int y = event.getY();        // mouse coordinates
+		Point3d point3d = new Point3d(), center = new Point3d();
+		canvas.getPixelLocationInImagePlate(x, y, point3d);// obtain AWT pixel in ImagePlate coordinates
+		canvas.getCenterEyeInImagePlate(center);           // obtain eye's position in IP coordinates
 		
-		// Transform3D transform3D = new Transform3D();       // matrix to relate ImagePlate coordinates~
-		// canvas.getImagePlateToVworld(transform3D);         // to Virtual World coordinates
-		// transform3D.transform(point3d);                    // transform 'point3d' with 'transform3D'
-		// transform3D.transform(center);                     // transform 'center' with 'transform3D'
+		Transform3D transform3D = new Transform3D();       // matrix to relate ImagePlate coordinates~
+		canvas.getImagePlateToVworld(transform3D);         // to Virtual World coordinates
+		transform3D.transform(point3d);                    // transform 'point3d' with 'transform3D'
+		transform3D.transform(center);                     // transform 'center' with 'transform3D'
 
-		// Vector3d mouseVec = new Vector3d();
-		// mouseVec.sub(point3d, center);
-		// mouseVec.normalize();
-		// pickTool.setShapeRay(point3d, mouseVec);           // send a PickRay for intersection
+		Vector3d mouseVec = new Vector3d();
+		mouseVec.sub(point3d, center);
+		mouseVec.normalize();
+		pickTool.setShapeRay(point3d, mouseVec);           // send a PickRay for intersection
 
-		// if(pickTool.pickClosest() != null) {
-        //     PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
-        //     Node clicked = pickResult.getNode(PickResult.PRIMITIVE);
-        //     if(clicked.equals(wall1.getChild(0)) || clicked.equals(wall2.getChild(0))){
-		// 		// change wall texture
-		// 	}
-		// 	else if(clicked.equals(floor.getChild(0))){
-		// 		// change floor texture
-		// 	}
-        // } 
+		if (pickTool.pickClosest() != null) {
+			PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
+			Node clicked = (Node) pickResult.getNode(PickResult.PRIMITIVE);
+			Walls_Floors temp = (Walls_Floors) roomObjects[10];
+
+			if(clicked.equals(temp.getFloor())){
+				Box trsm = (Box) temp.getFloor();
+				currentFloor++;
+				changeAppearance(trsm.getAppearance(), floorNames[currentFloor % 4]);
+
+			}
+			if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){
+				System.out.println("The Walls");
+			}
+			
+			
+		} 
 	}
 
 	public void mouseEntered(MouseEvent arg0) { }
@@ -297,8 +333,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
+	// @Override
+	// public void keyTyped(KeyEvent e) {
 		
-	}
+	// }
 }
