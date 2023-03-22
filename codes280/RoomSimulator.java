@@ -43,6 +43,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	// static TransformGroup wall1;
 	// static TransformGroup wall2;
 
+	static Boolean pressed;
+	static Boolean pressed_left;
+	static RoomObjects[] roomObjects;
+
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
 		String filename = fileFormat + "Images/" + fn;
@@ -126,7 +130,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		// Transform3D trsm_floor = new Transform3D();
 		Transform3D tableTex = new Transform3D();
 
-		RoomObjects[] roomObjects = new RoomObjects[OBJ_NUM];
+		roomObjects = new RoomObjects[OBJ_NUM];
 		TransformGroup desktop_Items = new TransformGroup();
 		
 		roomObjects[0] = new TableObject(); //For table
@@ -144,7 +148,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[10] = new Walls_Floors();
 
 
-
+		
 
 		
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
@@ -165,6 +169,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomTG.addChild(roomObjects[9].position_Object());
 		roomTG.addChild(roomObjects[10].position_Object());
 
+		Alpha a = roomObjects[10].get_Alpha();
+		a.pause();
+
+		Alpha b = roomObjects[10].get_Alpha2();
+		b.pause();
 		
         return roomTG;
 	}
@@ -192,6 +201,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		Canvas3D canvas = new Canvas3D(config);
 		canvas.addMouseListener(this);                     // NOTE: enable mouse clicking
 		
+		canvas.addKeyListener(this);
+		pressed = false;
+		pressed_left = false;
+
+
+
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
@@ -248,12 +263,38 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println("PRESSED");
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			if(!pressed){
+				pressed = true;
+				Alpha a = roomObjects[10].get_Alpha();
+				a.resume();
+			}
+		}
+
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			if(!pressed_left){
+				pressed_left = true;
+				Alpha a = roomObjects[10].get_Alpha2();
+				a.resume();
+			}
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		System.out.println("RELEASED");
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			Alpha a = roomObjects[10].get_Alpha();
+			// a.setMode(Alpha.DECREASING_ENABLE);
+			a.pause();
+			pressed = false;
+		}
+
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			Alpha a = roomObjects[10].get_Alpha2();
+			// a.setMode(Alpha.INCREASING_ENABLE);
+			a.pause();
+			pressed_left = false;
+		}
 	}
 
 	@Override

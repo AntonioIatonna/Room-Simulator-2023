@@ -39,6 +39,8 @@ import org.jogamp.vecmath.Vector3f;
 
 public abstract class RoomObjects {
 	protected Alpha rotationAlpha;                           // NOTE: keep for future use
+	protected Alpha rotationAlpha2;                           // NOTE: keep for future use
+
 	protected BranchGroup objBG;                           // load external object to 'objBG'
 	protected TransformGroup objTG;                        // use 'objTG' to position an object
 	protected TransformGroup objRG;                        // use 'objRG' to rotate an object
@@ -50,6 +52,10 @@ public abstract class RoomObjects {
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
 	
+	public Alpha get_Alpha() { return rotationAlpha; };    // NOTE: keep for future use 
+	public Alpha get_Alpha2() { return rotationAlpha2; };    // NOTE: keep for future use 
+
+
 	private Scene loadShape(String obj_name) {
 		ObjectFile f = new ObjectFile(ObjectFile.RESIZE, (float) (60 * Math.PI / 180.0));
 		Scene s = null;
@@ -416,7 +422,7 @@ class Walls_Floors extends RoomObjects{
 		Transform3D r_axis = new Transform3D();            // default: rotate around Y-axis
 		r_axis.rotY(Math.PI/2);                              // rotate around y-axis for 180 degrees
 		objRG = new TransformGroup(r_axis);
-		
+
 		objTG = new TransformGroup();  
 		objTG.addChild(objRG);                             // position "FanStand" by attaching 'objRG' to 'objTG'
 		objRG.addChild(objBG);  
@@ -449,9 +455,10 @@ class Walls_Floors extends RoomObjects{
 		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
 		wall2.setTransform(trsm_wall2);
 
-        add_Child(floor);
-        add_Child(wall1);
-        add_Child(wall2);
+        objBG.addChild(floor);
+        objBG.addChild(wall1);
+        objBG.addChild(wall2);
+
 
 		makeRotations();                                 // set appearance after converting object node to Shape3D
 
@@ -462,18 +469,34 @@ class Walls_Floors extends RoomObjects{
 		objRG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 
 		// Rotate Among Z-axis
-		Transform3D zAxis = new Transform3D();
-		zAxis.rotX(Math.PI / 2.0f);
+		Transform3D yAxis = new Transform3D();
+		yAxis.rotY(Math.PI / 2.0f);
 	
-		rotationAlpha = new Alpha(-1, 500);
+		rotationAlpha = new Alpha(-1, 8000);
+
+		rotationAlpha2 = new Alpha(1, 8000);
+
+		rotationAlpha2.setDecreasingAlphaRampDuration(8000);
+
+
+		rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
+		rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
+
 	
 		// Does 360 deg rotation 
 		RotationInterpolator rotateInterpol = new RotationInterpolator(
-				rotationAlpha, objRG, zAxis, 0.0f, (float) Math.PI * 2.0f);
-	
+				rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+
+		// RotationInterpolator rotateInterpol2 = new RotationInterpolator(
+		// 	rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+		
+		// rotateInterpol2.setSchedulingBounds(new BoundingSphere());
+
 		rotateInterpol.setSchedulingBounds(new BoundingSphere());
 
 		objBG.addChild(rotateInterpol);
+		// objBG.addChild(rotateInterpol2);
+
 
 	}
 
