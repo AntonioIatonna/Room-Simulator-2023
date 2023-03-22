@@ -9,10 +9,12 @@ import java.io.FileNotFoundException;
 
 import org.jogamp.java3d.Alpha;
 import org.jogamp.java3d.Appearance;
+import org.jogamp.java3d.BoundingSphere;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.ImageComponent2D;
 import org.jogamp.java3d.Material;
 import org.jogamp.java3d.PolygonAttributes;
+import org.jogamp.java3d.RotationInterpolator;
 import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.TexCoordGeneration;
 import org.jogamp.java3d.Texture;
@@ -36,7 +38,7 @@ import org.jogamp.vecmath.Vector3f;
                             // use 'post' to specify location
 
 public abstract class RoomObjects {
-	private Alpha rotationAlpha;                           // NOTE: keep for future use
+	protected Alpha rotationAlpha;                           // NOTE: keep for future use
 	protected BranchGroup objBG;                           // load external object to 'objBG'
 	protected TransformGroup objTG;                        // use 'objTG' to position an object
 	protected TransformGroup objRG;                        // use 'objRG' to rotate an object
@@ -76,6 +78,15 @@ public abstract class RoomObjects {
 		obj_shape.setName(obj_name);                       // use the name to identify the object 
 	}
 	
+	
+	protected void transform_Object() {
+		Transform3D scaler = new Transform3D();
+		scaler.setScale(scale);                            // set scale for the 4x4 matrix
+		scaler.setTranslation(post);                       // set translations for the 4x4 matrix
+		objTG = new TransformGroup(scaler);                // set the translation BG with the 4x4 matrix
+		objBG = new BranchGroup();                      // use the name to identify the object 
+	}
+
 	protected Appearance app = new Appearance();
 	private int shine = 32;                                // specify common values for object's appearance
 	protected Color3f[] mtl_clr = {new Color3f(1.000000f, 1.000000f, 1.000000f),
@@ -378,6 +389,92 @@ class PictureFrame extends RoomObjects{
 		add_Child(pic);
 
 		return objTG;                                     
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);   
+	}
+
+}
+
+class Walls_Floors extends RoomObjects{
+	TransformGroup floor;
+	TransformGroup wall1;
+	TransformGroup wall2;
+
+	public Walls_Floors() {
+		scale = 1.0d;                                        // use to scale up/down original size
+		post = new Vector3f(0.0f,0f,0f);                   // use to move object for positioning  
+		transform_Object();                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = Commons.Brown; // set  color 		                                              
+		
+		// obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+	
+	public TransformGroup position_Object() {
+
+		Transform3D r_axis = new Transform3D();            // default: rotate around Y-axis
+		r_axis.rotY(Math.PI/2);                              // rotate around y-axis for 180 degrees
+		objRG = new TransformGroup(r_axis);
+		
+		objTG = new TransformGroup();  
+		objTG.addChild(objRG);                             // position "FanStand" by attaching 'objRG' to 'objTG'
+		objRG.addChild(objBG);  
+		  
+		Float x = 4.0f;
+		Float y = 3.0f;
+		Float z = 3.0f;
+		Float depth = 0.2f;
+
+		floor = new TransformGroup();
+		wall1 = new TransformGroup();
+		wall2 = new TransformGroup();
+
+		Transform3D trsm_wall1 = new Transform3D();
+		Transform3D trsm_wall2 = new Transform3D();
+		Transform3D trsm_floor = new Transform3D();
+
+
+		trsm_wall1.setTranslation(new Vector3f(0.0f, -(depth), -(depth + z)));
+		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
+		trsm_floor.setTranslation(new Vector3f(0.0f, -(y), 0.0f));
+
+		// Add Textures:
+		floor.addChild(new Box(x, depth, z,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("floor1.jpg")));
+		floor.setTransform(trsm_floor);
+		
+		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
+		wall1.setTransform(trsm_wall1);
+
+		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
+		wall2.setTransform(trsm_wall2);
+
+        add_Child(floor);
+        add_Child(wall1);
+        add_Child(wall2);
+
+		makeRotations();                                 // set appearance after converting object node to Shape3D
+
+		return objTG;                                     
+	}
+
+	private void makeRotations(){
+		objRG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+		// Rotate Among Z-axis
+		Transform3D zAxis = new Transform3D();
+		zAxis.rotX(Math.PI / 2.0f);
+	
+		rotationAlpha = new Alpha(-1, 500);
+	
+		// Does 360 deg rotation 
+		RotationInterpolator rotateInterpol = new RotationInterpolator(
+				rotationAlpha, objRG, zAxis, 0.0f, (float) Math.PI * 2.0f);
+	
+		rotateInterpol.setSchedulingBounds(new BoundingSphere());
+
+		objBG.addChild(rotateInterpol);
+
 	}
 
 	public void add_Child(TransformGroup nextTG) {

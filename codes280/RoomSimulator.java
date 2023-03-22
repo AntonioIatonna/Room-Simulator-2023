@@ -27,18 +27,21 @@ import org.jogamp.java3d.utils.picking.PickResult;
 import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.vecmath.*;
 
-public class RoomSimulator extends JPanel implements MouseListener{
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
 	private Canvas3D canvas;
 	private static PickTool pickTool;
 	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
-    private static final int OBJ_NUM = 10;
+    private static final int OBJ_NUM = 20;
 // declare transform groups for all objects with chaanging textures here
-	static TransformGroup floor;
-	static TransformGroup wall1;
-	static TransformGroup wall2;
+	// static TransformGroup floor;
+	// static TransformGroup wall1;
+	// static TransformGroup wall2;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -107,20 +110,20 @@ public class RoomSimulator extends JPanel implements MouseListener{
 	}
 
 	private static TransformGroup createRoom() {
-		Float x = 4.0f;
-		Float y = 3.0f;
-		Float z = 3.0f;
-		Float depth = 0.2f;
+		// Float x = 4.0f;
+		// Float y = 3.0f;
+		// Float z = 3.0f;
+		// Float depth = 0.2f;
 
 		TransformGroup roomTG = new TransformGroup();
 
-		floor = new TransformGroup();
-		wall1 = new TransformGroup();
-		wall2 = new TransformGroup();
+		// floor = new TransformGroup();
+		// wall1 = new TransformGroup();
+		// wall2 = new TransformGroup();
 
-		Transform3D trsm_wall1 = new Transform3D();
-		Transform3D trsm_wall2 = new Transform3D();
-		Transform3D trsm_floor = new Transform3D();
+		// Transform3D trsm_wall1 = new Transform3D();
+		// Transform3D trsm_wall2 = new Transform3D();
+		// Transform3D trsm_floor = new Transform3D();
 		Transform3D tableTex = new Transform3D();
 
 		RoomObjects[] roomObjects = new RoomObjects[OBJ_NUM];
@@ -137,6 +140,9 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		roomObjects[8] = new tableWhiteMat();
 
 		roomObjects[9] = new PictureFrame();
+
+		roomObjects[10] = new Walls_Floors();
+
 
 
 
@@ -157,25 +163,9 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		roomTG.addChild(roomObjects[8].position_Object());
 
 		roomTG.addChild(roomObjects[9].position_Object());
+		roomTG.addChild(roomObjects[10].position_Object());
 
-		trsm_wall1.setTranslation(new Vector3f(0.0f, -(depth), -(depth + z)));
-		trsm_wall2.setTranslation(new Vector3f(-(x + depth), -(depth), 0.0f));
-		trsm_floor.setTranslation(new Vector3f(0.0f, -(y), 0.0f));
-
-		// Add Textures:
-		floor.addChild(new Box(x, depth, z,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("floor1.jpg")));
-		floor.setTransform(trsm_floor);
 		
-		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
-		wall1.setTransform(trsm_wall1);
-
-		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("wall1.jpg")));
-		wall2.setTransform(trsm_wall2);
-
-        roomTG.addChild(floor);
-        roomTG.addChild(wall1);
-        roomTG.addChild(wall2);
-
         return roomTG;
 	}
 
@@ -205,7 +195,7 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
-		sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
+		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
 
@@ -224,35 +214,50 @@ public class RoomSimulator extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent event) {
-		int x = event.getX(); int y = event.getY();        // mouse coordinates
-		Point3d point3d = new Point3d(), center = new Point3d();
-		canvas.getPixelLocationInImagePlate(x, y, point3d);// obtain AWT pixel in ImagePlate coordinates
-		canvas.getCenterEyeInImagePlate(center);           // obtain eye's position in IP coordinates
+		// int x = event.getX(); int y = event.getY();        // mouse coordinates
+		// Point3d point3d = new Point3d(), center = new Point3d();
+		// canvas.getPixelLocationInImagePlate(x, y, point3d);// obtain AWT pixel in ImagePlate coordinates
+		// canvas.getCenterEyeInImagePlate(center);           // obtain eye's position in IP coordinates
 		
-		Transform3D transform3D = new Transform3D();       // matrix to relate ImagePlate coordinates~
-		canvas.getImagePlateToVworld(transform3D);         // to Virtual World coordinates
-		transform3D.transform(point3d);                    // transform 'point3d' with 'transform3D'
-		transform3D.transform(center);                     // transform 'center' with 'transform3D'
+		// Transform3D transform3D = new Transform3D();       // matrix to relate ImagePlate coordinates~
+		// canvas.getImagePlateToVworld(transform3D);         // to Virtual World coordinates
+		// transform3D.transform(point3d);                    // transform 'point3d' with 'transform3D'
+		// transform3D.transform(center);                     // transform 'center' with 'transform3D'
 
-		Vector3d mouseVec = new Vector3d();
-		mouseVec.sub(point3d, center);
-		mouseVec.normalize();
-		pickTool.setShapeRay(point3d, mouseVec);           // send a PickRay for intersection
+		// Vector3d mouseVec = new Vector3d();
+		// mouseVec.sub(point3d, center);
+		// mouseVec.normalize();
+		// pickTool.setShapeRay(point3d, mouseVec);           // send a PickRay for intersection
 
-		if(pickTool.pickClosest() != null) {
-            PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
-            Node clicked = pickResult.getNode(PickResult.PRIMITIVE);
-            if(clicked.equals(wall1.getChild(0)) || clicked.equals(wall2.getChild(0))){
-				// change wall texture
-			}
-			else if(clicked.equals(floor.getChild(0))){
-				// change floor texture
-			}
-        } 
+		// if(pickTool.pickClosest() != null) {
+        //     PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
+        //     Node clicked = pickResult.getNode(PickResult.PRIMITIVE);
+        //     if(clicked.equals(wall1.getChild(0)) || clicked.equals(wall2.getChild(0))){
+		// 		// change wall texture
+		// 	}
+		// 	else if(clicked.equals(floor.getChild(0))){
+		// 		// change floor texture
+		// 	}
+        // } 
 	}
 
 	public void mouseEntered(MouseEvent arg0) { }
 	public void mouseExited(MouseEvent arg0) { }
 	public void mousePressed(MouseEvent e) { }
 	public void mouseReleased(MouseEvent e) { }
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println("PRESSED");
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		System.out.println("RELEASED");
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		
+	}
 }
