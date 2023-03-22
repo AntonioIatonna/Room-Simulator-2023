@@ -2,7 +2,7 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
 
 
 import java.io.FileNotFoundException;
@@ -47,7 +47,7 @@ public abstract class RoomObjects {
 	protected double scale;                                // use 'scale' to define scaling
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
-    private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+    private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -459,7 +459,6 @@ class Walls_Floors extends RoomObjects{
         objBG.addChild(wall1);
         objBG.addChild(wall2);
 
-
 		makeRotations();                                 // set appearance after converting object node to Shape3D
 
 		return objTG;                                     
@@ -474,30 +473,25 @@ class Walls_Floors extends RoomObjects{
 	
 		rotationAlpha = new Alpha(-1, 8000);
 
-		rotationAlpha2 = new Alpha(1, 8000);
+		rotationAlpha2 = new Alpha(-1, 8000);
 
-		rotationAlpha2.setDecreasingAlphaRampDuration(8000);
-
+		rotationAlpha.setDecreasingAlphaDuration(8000);
+		rotationAlpha2.setDecreasingAlphaDuration(8000);
 
 		rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
 		rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
-
 	
 		// Does 360 deg rotation 
-		RotationInterpolator rotateInterpol = new RotationInterpolator(
-				rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+		RotationInterpolator rotateInterpol = new RotationInterpolator(rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
 
-		// RotationInterpolator rotateInterpol2 = new RotationInterpolator(
-		// 	rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+		RotationInterpolator rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
 		
-		// rotateInterpol2.setSchedulingBounds(new BoundingSphere());
+		rotateInterpol2.setSchedulingBounds(new BoundingSphere());
 
 		rotateInterpol.setSchedulingBounds(new BoundingSphere());
 
 		objBG.addChild(rotateInterpol);
-		// objBG.addChild(rotateInterpol2);
-
-
+		objBG.addChild(rotateInterpol2);
 	}
 
 	public void add_Child(TransformGroup nextTG) {
