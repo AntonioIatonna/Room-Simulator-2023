@@ -30,7 +30,7 @@ import org.jogamp.vecmath.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class RoomSimulator extends JPanel implements MouseListener{
+public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
@@ -46,6 +46,9 @@ public class RoomSimulator extends JPanel implements MouseListener{
 
 	static String floorNames[];
 	static int currentFloor;
+
+	static String wallNames[];
+	static int currentWall;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -155,22 +158,22 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
 		desktop_Items.setTransform(tableTex);
 		
-		roomTG.addChild(desktop_Items);
-		roomTG.addChild(roomObjects[0].position_Object());
-		roomTG.addChild(roomObjects[1].position_Object());
-		roomTG.addChild(roomObjects[2].position_Object());
-		roomTG.addChild(roomObjects[3].position_Object());
-		roomTG.addChild(roomObjects[4].position_Object());
-		roomTG.addChild(roomObjects[5].position_Object());
-		roomTG.addChild(roomObjects[6].position_Object());
-		roomTG.addChild(roomObjects[7].position_Object());
-		roomTG.addChild(roomObjects[8].position_Object());
+		roomTG = roomObjects[10].position_Object(); // walls and floor
+		roomObjects[10].add_Child(desktop_Items);
+		roomObjects[10].add_Child(roomObjects[0].position_Object());
+		roomObjects[10].add_Child(roomObjects[1].position_Object());
+		roomObjects[10].add_Child(roomObjects[2].position_Object());
+		roomObjects[10].add_Child(roomObjects[3].position_Object());
+		roomObjects[10].add_Child(roomObjects[4].position_Object());
+		roomObjects[10].add_Child(roomObjects[5].position_Object());
+		roomObjects[10].add_Child(roomObjects[6].position_Object());
+		roomObjects[10].add_Child(roomObjects[7].position_Object());
+		roomObjects[10].add_Child(roomObjects[8].position_Object());
 
-		roomTG.addChild(roomObjects[9].position_Object());
-		roomTG.addChild(roomObjects[10].position_Object());
+		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 
-		// Alpha a = roomObjects[10].get_Alpha();
-		// a.pause();
+		Alpha a = roomObjects[10].get_Alpha();
+		a.pause();
 
 		// Alpha b = roomObjects[10].get_Alpha2();
 		// b.pause();
@@ -203,7 +206,7 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		canvas = new Canvas3D(config);
 		canvas.addMouseListener(this);                     // NOTE: enable mouse clicking
 		
-		// canvas.addKeyListener(this);
+		canvas.addKeyListener(this);
 		pressed = false;
 		pressed_left = false;
 
@@ -213,8 +216,14 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		floorNames[1] = "floor2.jpg";
 		floorNames[2] = "floor3.jpg";
 		floorNames[3] = "floor4.jpg";
-		
 		currentFloor = 0;
+
+		wallNames = new String[4];
+		wallNames[0] = "wall1.jpg";
+		wallNames[1] = "wall2.jpg";
+		wallNames[2] = "wall3.jpg";
+		wallNames[3] = "wall4.jpg";
+		currentWall = 0;
 
 
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
@@ -245,7 +254,6 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		// Load the image
 		textureLoader = new TextureLoader(fileFormat + "Images/" + fileName, null);
 		image         = textureLoader.getImage();
-	
 	
 		// Create the Texture
 		texture       = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
@@ -282,13 +290,14 @@ public class RoomSimulator extends JPanel implements MouseListener{
 				Box trsm = (Box) temp.getFloor();
 				currentFloor++;
 				changeAppearance(trsm.getAppearance(), floorNames[currentFloor % 4]);
-
 			}
 			if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){
-				System.out.println("The Walls");
+				Box trsm1 = (Box) temp.getWall1();
+				Box trsm2 = (Box) temp.getWall2();
+				currentWall++;
+				changeAppearance(trsm1.getAppearance(), wallNames[currentWall % 4]);
+				changeAppearance(trsm2.getAppearance(), wallNames[currentWall % 4]);
 			}
-			
-			
 		} 
 	}
 
@@ -333,8 +342,8 @@ public class RoomSimulator extends JPanel implements MouseListener{
 		}
 	}
 
-	// @Override
-	// public void keyTyped(KeyEvent e) {
+	@Override
+	public void keyTyped(KeyEvent e) {
 		
-	// }
+	}
 }
