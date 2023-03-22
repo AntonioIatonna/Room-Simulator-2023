@@ -2,7 +2,7 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -36,7 +36,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private static JFrame frame;
 	private Canvas3D canvas;
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 // declare transform groups for all objects with chaanging textures here
 	// static TransformGroup floor;
@@ -172,8 +172,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		Alpha a = roomObjects[10].get_Alpha();
 		a.pause();
 
-		Alpha b = roomObjects[10].get_Alpha2();
-		b.pause();
+		// Alpha b = roomObjects[10].get_Alpha2();
+		// b.pause();
 		
         return roomTG;
 	}
@@ -267,6 +267,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			if(!pressed){
 				pressed = true;
 				Alpha a = roomObjects[10].get_Alpha();
+				a.setMode(Alpha.DECREASING_ENABLE);
 				a.resume();
 			}
 		}
@@ -274,7 +275,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		if(e.getKeyCode() == KeyEvent.VK_LEFT){
 			if(!pressed_left){
 				pressed_left = true;
-				Alpha a = roomObjects[10].get_Alpha2();
+				Alpha a = roomObjects[10].get_Alpha();
+				a.setMode(Alpha.INCREASING_ENABLE);
 				a.resume();
 			}
 		}
@@ -284,14 +286,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			Alpha a = roomObjects[10].get_Alpha();
-			// a.setMode(Alpha.DECREASING_ENABLE);
 			a.pause();
 			pressed = false;
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			Alpha a = roomObjects[10].get_Alpha2();
-			// a.setMode(Alpha.INCREASING_ENABLE);
+			Alpha a = roomObjects[10].get_Alpha();
 			a.pause();
 			pressed_left = false;
 		}

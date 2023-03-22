@@ -473,25 +473,25 @@ class Walls_Floors extends RoomObjects{
 	
 		rotationAlpha = new Alpha(-1, 8000);
 
-		rotationAlpha2 = new Alpha(-1, 8000);
+		// rotationAlpha2 = new Alpha(-1, 8000);
 
 		rotationAlpha.setDecreasingAlphaDuration(8000);
-		rotationAlpha2.setDecreasingAlphaDuration(8000);
+		// rotationAlpha2.setDecreasingAlphaDuration(8000);
 
-		rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
-		rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
+		// rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
+		// rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
 	
 		// Does 360 deg rotation 
 		RotationInterpolator rotateInterpol = new RotationInterpolator(rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
 
-		RotationInterpolator rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+		// RotationInterpolator rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
 		
-		rotateInterpol2.setSchedulingBounds(new BoundingSphere());
+		// rotateInterpol2.setSchedulingBounds(new BoundingSphere());
 
 		rotateInterpol.setSchedulingBounds(new BoundingSphere());
 
 		objBG.addChild(rotateInterpol);
-		objBG.addChild(rotateInterpol2);
+		// objBG.addChild(rotateInterpol2);
 	}
 
 	public void add_Child(TransformGroup nextTG) {
