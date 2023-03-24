@@ -224,7 +224,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 
 
-		// Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
+		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
 		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
