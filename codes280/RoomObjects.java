@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.Shape;
 import java.io.FileNotFoundException;
@@ -43,13 +43,19 @@ public abstract class RoomObjects {
 	protected Alpha rotationAlpha;                           // NOTE: keep for future use
 	protected Alpha rotationAlpha2;                           // NOTE: keep for future use
 
+	protected RotationInterpolator rotateInterpol;
+	protected RotationInterpolator rotateInterpol2;
+
 	protected BranchGroup objBG;                           // load external object to 'objBG'
 	protected TransformGroup objTG;                        // use 'objTG' to position an object
+
+	public TransformGroup getTG(){ return objTG; }
+
 	protected TransformGroup objRG;                        // use 'objRG' to rotate an object
 	protected double scale;                                // use 'scale' to define scaling
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
-    private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -57,6 +63,8 @@ public abstract class RoomObjects {
 	public Alpha get_Alpha() { return rotationAlpha; };    // NOTE: keep for future use 
 	public Alpha get_Alpha2() { return rotationAlpha2; };    // NOTE: keep for future use 
 
+	public RotationInterpolator get_RotInterpol() { return rotateInterpol; }; 
+	public RotationInterpolator get_RotInterpol2() { return rotateInterpol2; }; 
 
 
 
@@ -425,7 +433,15 @@ class Walls_Floors extends RoomObjects{
 		r_axis.rotY(Math.PI/2);                              // rotate around y-axis for 180 degrees
 		objRG = new TransformGroup(r_axis);
 
-		objTG = new TransformGroup();  
+
+		Transform3D initalRot = new Transform3D();            // default: rotate around Y-axis
+		initalRot.rotY(Math.PI/2.0 * 3.0);   
+		objTG = new TransformGroup(initalRot);  
+
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+
+
 		objTG.addChild(objRG);                             // position "FanStand" by attaching 'objRG' to 'objTG'
 		objRG.addChild(objBG);  
 		  
@@ -468,7 +484,7 @@ class Walls_Floors extends RoomObjects{
         objBG.addChild(wall1);
         objBG.addChild(wall2);
 
-		makeRotations();                                 // set appearance after converting object node to Shape3D
+		// makeRotations();                                 // set appearance after converting object node to Shape3D
 
 		return objTG;                                     
 	}
@@ -480,26 +496,47 @@ class Walls_Floors extends RoomObjects{
 		Transform3D yAxis = new Transform3D();
 		yAxis.rotY(Math.PI / 2.0f);
 	
-		rotationAlpha = new Alpha(-1, 8000);
+		// rotationAlpha = new Alpha();
+		// rotationAlpha2 = new Alpha();
 
-		// rotationAlpha2 = new Alpha(-1, 8000);
 
-		rotationAlpha.setDecreasingAlphaDuration(8000);
-		// rotationAlpha2.setDecreasingAlphaDuration(8000);
+		// // rotationAlpha.setLoopCount(1);
 
-		// rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
+		// rotationAlpha.setMode(Alpha.INCREASING_ENABLE);
+
 		// rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
-	
-		// Does 360 deg rotation 
-		RotationInterpolator rotateInterpol = new RotationInterpolator(rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
 
-		// RotationInterpolator rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+
+		// rotationAlpha.setIncreasingAlphaDuration(8000);
+
+		// // rotationAlpha.setIncreasingAlphaRampDuration(8000);
+		// // rotationAlpha.setAlphaAtOneDuration(4000);
+
+		// // rotationAlpha2 = new Alpha(-1, 8000);
+
+		// rotationAlpha2.setIncreasingAlphaDuration(8000);
+		// // rotationAlpha.setAlphaAtZeroDuration(4000);
+		// // rotationAlpha.setStartTime();
+		// // rotationAlpha.setDecreasingAlphaRampDuration(8000);
+
+
+		// // rotationAlpha.setStartTime(rotationAlpha.getStartTime() + 24000); 
+		// // rotationAlpha.
+		// // rotationAlpha2.setDecreasingAlphaDuration(8000);
+
+		// // rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
+		// // rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
+	
+		// // Does 360 deg rotation 
+		// rotateInterpol = new RotationInterpolator(rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
+
+		// rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, (float) Math.PI * 2.0f, 0.0f);
 		
 		// rotateInterpol2.setSchedulingBounds(new BoundingSphere());
 
-		rotateInterpol.setSchedulingBounds(new BoundingSphere());
+		// rotateInterpol.setSchedulingBounds(new BoundingSphere());
 
-		objBG.addChild(rotateInterpol);
+		// objBG.addChild(rotateInterpol);
 		// objBG.addChild(rotateInterpol2);
 	}
 

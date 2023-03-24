@@ -2,7 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -19,10 +20,12 @@ import org.jogamp.java3d.loaders.IncorrectFormatException;
 import org.jogamp.java3d.loaders.ParsingErrorException;
 import org.jogamp.java3d.loaders.Scene;
 import org.jogamp.java3d.loaders.objectfile.ObjectFile;
+
 import org.jogamp.java3d.utils.geometry.Box;
 import org.jogamp.java3d.utils.geometry.Primitive;
 import org.jogamp.java3d.utils.image.TextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
+
 import org.jogamp.java3d.utils.picking.PickResult;
 import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.vecmath.*;
@@ -37,7 +40,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -49,6 +52,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	static String wallNames[];
 	static int currentWall;
+
+	static double currAngle_L_R;
+	static double currAngle_U_D;
+
+
+
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -117,20 +126,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	}
 
 	private static TransformGroup createRoom() {
-		// Float x = 4.0f;
-		// Float y = 3.0f;
-		// Float z = 3.0f;
-		// Float depth = 0.2f;
+
 
 		TransformGroup roomTG = new TransformGroup();
 
-		// floor = new TransformGroup();
-		// wall1 = new TransformGroup();
-		// wall2 = new TransformGroup();
-
-		// Transform3D trsm_wall1 = new Transform3D();
-		// Transform3D trsm_wall2 = new Transform3D();
-		// Transform3D trsm_floor = new Transform3D();
 		Transform3D tableTex = new Transform3D();
 
 		roomObjects = new RoomObjects[OBJ_NUM];
@@ -172,13 +171,9 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 
-		Alpha a = roomObjects[10].get_Alpha();
-		a.pause();
+		currAngle_L_R = Math.PI/2.0 * 3.0;
+		currAngle_U_D = 0;
 
-		// Alpha b = roomObjects[10].get_Alpha2();
-		// b.pause();
-		// Alpha b = roomObjects[10].get_Alpha2();
-		// b.pause();
 		
         return roomTG;
 	}
@@ -227,7 +222,9 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
-		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
+
+
+		// Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
 		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
@@ -263,6 +260,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		app.setTexture(texture);
 	}
 	
+
 
 	@Override
 	public void mouseClicked(MouseEvent event) {
@@ -301,46 +299,102 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		} 
 	}
 
+
 	public void mouseEntered(MouseEvent arg0) { }
 	public void mouseExited(MouseEvent arg0) { }
 	public void mousePressed(MouseEvent e) { }
 	public void mouseReleased(MouseEvent e) { }
 
+
+	public static void moveObjectLR(TransformGroup trsm, double angle){
+		Transform3D temp = new Transform3D();
+
+
+		// Transform3D tx = new Transform3D();
+		Transform3D ty = new Transform3D();
+		// Transform3D tz = new Transform3D();
+
+		currAngle_L_R += angle;
+		// currAngle_U_D += angle;
+
+
+		if(currAngle_L_R >= Math.PI*2.0){
+			currAngle_L_R -= Math.PI*2.0;
+		}
+
+
+		// tx.rotX(currAngle_U_D);
+		// temp.mul(tx);
+
+		ty.rotY(currAngle_L_R);
+		temp.mul(ty);
+
+		// tz.rotZ(currAngle_U_D);
+		// temp.mul(tz);
+
+		trsm.setTransform(temp);
+	}
+
+	// public static void moveObjectUD(TransformGroup trsm, double angle){
+	// 	Transform3D temp = new Transform3D();
+
+
+	// 	Transform3D tx = new Transform3D();
+	// 	Transform3D ty = new Transform3D();
+	// 	Transform3D tz = new Transform3D();
+
+	// 	// currAngle_L_R += angle;
+	// 	currAngle_U_D += angle;
+
+	// 	if(currAngle_U_D >= Math.PI*2.0){
+	// 		currAngle_U_D -= Math.PI*2.0;
+	// 	}
+
+	// 	// tx.rotX(currAngle_U_D);
+	// 	// temp.mul(tx);
+
+	// 	ty.rotY(currAngle_L_R);
+	// 	temp.mul(ty);
+
+	// 	// tz.rotZ(currAngle_U_D);
+	// 	// temp.mul(tz);
+
+	// 	trsm.setTransform(temp);
+	// }
+
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			if(!pressed){
-				pressed = true;
-				Alpha a = roomObjects[10].get_Alpha();
-				a.setMode(Alpha.DECREASING_ENABLE);
-				a.resume();
-			}
+			moveObjectLR(roomObjects[10].getTG(), 0.05);
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			if(!pressed_left){
-				pressed_left = true;
-				Alpha a = roomObjects[10].get_Alpha();
-				a.setMode(Alpha.INCREASING_ENABLE);
-				a.resume();
-			}
+			moveObjectLR(roomObjects[10].getTG(), -0.05);
+		}
+
+		// if(e.getKeyCode() == KeyEvent.VK_UP){
+		// 	moveObjectUD(roomObjects[10].getTG(), 0.1);
+		// }
+
+		// if(e.getKeyCode() == KeyEvent.VK_DOWN){
+		// 	moveObjectUD(roomObjects[10].getTG(), -0.1);
+		// }
+
+		if(e.getKeyCode() == KeyEvent.VK_UP){
+	
+		}
+
+		if(e.getKeyCode() == KeyEvent.VK_DOWN){
+
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-			Alpha a = roomObjects[10].get_Alpha();
-			a.pause();
-			pressed = false;
-		}
-
-		if(e.getKeyCode() == KeyEvent.VK_LEFT){
-			Alpha a = roomObjects[10].get_Alpha();
-			a.pause();
-			pressed_left = false;
-		}
+	
 	}
+
 
 	@Override
 	public void keyTyped(KeyEvent e) {
