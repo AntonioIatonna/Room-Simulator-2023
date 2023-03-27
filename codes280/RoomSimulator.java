@@ -2,9 +2,7 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
-
+package codesAI280;
 //package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
@@ -46,10 +44,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
-
-	private static SimpleUniverse su;
 
 	static Boolean pressed;
 	static Boolean pressed_left;
@@ -61,14 +57,17 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	static String wallNames[];
 	static int currentWall;
 
+	static String pictureNames[];
+	static int currentPicture;
+
 	static double currAngle_L_R;
 	static double currAngle_U_D;
 
 	// variables for sound
-	private static URL[] url;
-	private static BackgroundSound sound1;
-	private static PointSound sound2;
-	private static PointSound sound3;
+	private static URL[] url = new URL[3];
+	private static BackgroundSound sound1 = new BackgroundSound();
+	private static PointSound sound2 = new PointSound();
+	private static PointSound sound3 = new PointSound();
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -141,7 +140,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		Transform3D tableTex = new Transform3D();
 
-		url = new URL[3];
 		// create all sounds; must be 3 in order for it to work
 		url[0] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
         url[1] = Resources.getResource(fileFormat + "Sounds/" + "music.wav");
@@ -185,10 +183,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		// calculate and set angles for rotation
 		currAngle_L_R = Math.PI/2.0 * 3.0;
 		currAngle_U_D = 0;
-
-		sound1 = new BackgroundSound();
-		sound2 = new PointSound();
-		sound3 = new PointSound();
 
 		// big mess of capability setting in order to get it to work somebody clean this up
 		sound1.setCapability(PointSound.ALLOW_ENABLE_WRITE);
@@ -265,7 +259,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		
 		sceneTG.addChild(createRoom());                    // add the fan to the rotating 'sceneTG'
 
-
 		sceneBG.addChild(sceneTG);                         // keep the following stationary
 		sceneBG.addChild(Commons.add_Lights(Commons.White, 1));
 
@@ -300,8 +293,16 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		wallNames[3] = "wall4.jpg";
 		currentWall = 0;
 
-		su = new SimpleUniverse(canvas);    // create a SimpleUniverse
+		pictureNames = new String[6];
+		pictureNames[0] = "picture1.jpg";
+		pictureNames[1] = "picture2.jpg";
+		pictureNames[2] = "picture3.jpg";
+		pictureNames[3] = "picture4.jpg";
+		pictureNames[4] = "picture5.jpg";
+		pictureNames[5] = "picture6.jpg";
+		currentPicture = 0;
 
+		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
@@ -359,6 +360,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
 			Node clicked = (Node) pickResult.getNode(PickResult.PRIMITIVE);
 			Walls_Floors temp = (Walls_Floors) roomObjects[10];
+			PictureFrame temp2 = (PictureFrame) roomObjects[9];
 
 			if(clicked.equals(temp.getFloor())){
 				Box trsm = (Box) temp.getFloor();
@@ -371,6 +373,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 				currentWall++;
 				changeAppearance(trsm1.getAppearance(), wallNames[currentWall % 4]);
 				changeAppearance(trsm2.getAppearance(), wallNames[currentWall % 4]);
+			}
+			else if(clicked.equals(temp2.getPicture())){
+				Box trsm = (Box) temp2.getPicture();
+				currentPicture++;
+				changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 6]);
 			}
 		} 
 	}
@@ -407,7 +414,32 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		trsm.setTransform(temp);
 	}
 
+	// public static void moveObjectUD(TransformGroup trsm, double angle){
+	// 	Transform3D temp = new Transform3D();
 
+
+	// 	Transform3D tx = new Transform3D();
+	// 	Transform3D ty = new Transform3D();
+	// 	Transform3D tz = new Transform3D();
+
+	// 	// currAngle_L_R += angle;
+	// 	currAngle_U_D += angle;
+
+	// 	if(currAngle_U_D >= Math.PI*2.0){
+	// 		currAngle_U_D -= Math.PI*2.0;
+	// 	}
+
+	// 	// tx.rotX(currAngle_U_D);
+	// 	// temp.mul(tx);
+
+	// 	ty.rotY(currAngle_L_R);
+	// 	temp.mul(ty);
+
+	// 	// tz.rotZ(currAngle_U_D);
+	// 	// temp.mul(tz);
+
+	// 	trsm.setTransform(temp);
+	// }
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -419,12 +451,20 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			moveObjectLR(roomObjects[10].getTG(), -0.05);
 		}
 
+		// if(e.getKeyCode() == KeyEvent.VK_UP){
+		// 	moveObjectUD(roomObjects[10].getTG(), 0.1);
+		// }
+
+		// if(e.getKeyCode() == KeyEvent.VK_DOWN){
+		// 	moveObjectUD(roomObjects[10].getTG(), -0.1);
+		// }
+
 		if(e.getKeyCode() == KeyEvent.VK_UP){
-			Commons.define_Viewer2(su, new Point3d(0.00d, 20.0d, 0.0d));
+	
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_DOWN){
-			Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
+
 		}
 	}
 

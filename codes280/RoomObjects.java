@@ -2,9 +2,10 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+//package FinalProject.ModellingThe3DWorld.codes280;
 
+import java.awt.Frame;
 import java.awt.Shape;
 import java.io.FileNotFoundException;
 
@@ -55,7 +56,7 @@ public abstract class RoomObjects {
 	protected double scale;                                // use 'scale' to define scaling
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -405,6 +406,11 @@ class PictureFrame extends RoomObjects{
 		add_Child(pic);
 
 		return objTG;                                     
+	}
+
+	public Node getPicture(){
+		TransformGroup temp = (TransformGroup) objTG.getChild(1);
+		return temp.getChild(0);
 	}
 
 	public void add_Child(TransformGroup nextTG) {
