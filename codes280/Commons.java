@@ -113,6 +113,17 @@ public class Commons extends JPanel {
 	    viewTransform.setTransform(view_TM);               // set the TransformGroup of ViewingPlatform
 	}
 
+	public static void define_Viewer2(SimpleUniverse simple_U, Point3d eye) {
+
+	    TransformGroup viewTransform = simple_U.getViewingPlatform().getViewPlatformTransform();
+		Point3d center = new Point3d(0, 0, 0);             // define the point where the eye looks at
+		Vector3d up = new Vector3d(1, 0, 0);               // define camera's up direction
+		Transform3D view_TM = new Transform3D();
+		view_TM.lookAt(eye, center, up);
+		view_TM.invert();
+	    viewTransform.setTransform(view_TM);               // set the TransformGroup of ViewingPlatform
+	}
+
 	/* a function to allow key navigation with the ViewingPlateform */
 	public static KeyNavigatorBehavior key_Navigation(SimpleUniverse simple_U) {
 		ViewingPlatform view_platfm = simple_U.getViewingPlatform();

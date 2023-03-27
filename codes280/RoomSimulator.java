@@ -49,6 +49,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
+	private static SimpleUniverse su;
+
 	static Boolean pressed;
 	static Boolean pressed_left;
 	static RoomObjects[] roomObjects;
@@ -263,6 +265,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		
 		sceneTG.addChild(createRoom());                    // add the fan to the rotating 'sceneTG'
 
+
 		sceneBG.addChild(sceneTG);                         // keep the following stationary
 		sceneBG.addChild(Commons.add_Lights(Commons.White, 1));
 
@@ -297,7 +300,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		wallNames[3] = "wall4.jpg";
 		currentWall = 0;
 
-		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
+		su = new SimpleUniverse(canvas);    // create a SimpleUniverse
+
 
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
@@ -403,32 +407,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		trsm.setTransform(temp);
 	}
 
-	// public static void moveObjectUD(TransformGroup trsm, double angle){
-	// 	Transform3D temp = new Transform3D();
 
-
-	// 	Transform3D tx = new Transform3D();
-	// 	Transform3D ty = new Transform3D();
-	// 	Transform3D tz = new Transform3D();
-
-	// 	// currAngle_L_R += angle;
-	// 	currAngle_U_D += angle;
-
-	// 	if(currAngle_U_D >= Math.PI*2.0){
-	// 		currAngle_U_D -= Math.PI*2.0;
-	// 	}
-
-	// 	// tx.rotX(currAngle_U_D);
-	// 	// temp.mul(tx);
-
-	// 	ty.rotY(currAngle_L_R);
-	// 	temp.mul(ty);
-
-	// 	// tz.rotZ(currAngle_U_D);
-	// 	// temp.mul(tz);
-
-	// 	trsm.setTransform(temp);
-	// }
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -441,11 +420,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_UP){
-	
+			Commons.define_Viewer2(su, new Point3d(0.00d, 20.0d, 0.0d));
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_DOWN){
-
+			Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		}
 	}
 
