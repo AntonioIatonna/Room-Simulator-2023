@@ -63,6 +63,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	static double currAngle_L_R;
 	static double currAngle_U_D;
 
+	protected static SimpleUniverse su;
+
 	// variables for sound
 	private static URL[] url;
 	private static BackgroundSound sound1;
@@ -341,7 +343,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		pictureNames[5] = "picture6.jpg";
 		currentPicture = 0;
 
-		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
+		su = new SimpleUniverse(canvas);    // create a SimpleUniverse
 
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
@@ -490,20 +492,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			moveObjectLR(roomObjects[10].getTG(), -0.05);
 		}
 
-		// if(e.getKeyCode() == KeyEvent.VK_UP){
-		// 	moveObjectUD(roomObjects[10].getTG(), 0.1);
-		// }
-
-		// if(e.getKeyCode() == KeyEvent.VK_DOWN){
-		// 	moveObjectUD(roomObjects[10].getTG(), -0.1);
-		// }
-
 		if(e.getKeyCode() == KeyEvent.VK_UP){
-	
+			Commons.define_Viewer2(su, new Point3d(0.00d, 20.0d, 0.0d));
 		}
 
 		if(e.getKeyCode() == KeyEvent.VK_DOWN){
-
+			Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));
 		}
 	}
 
