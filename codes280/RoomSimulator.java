@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-//package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -44,7 +44,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -64,10 +64,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	static double currAngle_U_D;
 
 	// variables for sound
-	private static URL[] url = new URL[3];
-	private static BackgroundSound sound1 = new BackgroundSound();
-	private static PointSound sound2 = new PointSound();
-	private static PointSound sound3 = new PointSound();
+	private static URL[] url;
+	private static BackgroundSound sound1;
+	private static PointSound sound2;
+	private static PointSound sound3;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -140,10 +140,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		Transform3D tableTex = new Transform3D();
 
-		// create all sounds; must be 3 in order for it to work
-		url[0] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
-        url[1] = Resources.getResource(fileFormat + "Sounds/" + "music.wav");
-        url[2] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
 
 		roomObjects = new RoomObjects[OBJ_NUM];
 		TransformGroup desktop_Items = new TransformGroup();
@@ -161,6 +157,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[9] = new PictureFrame(); // picture frame
 
 		roomObjects[10] = new Walls_Floors(); // room itself
+
+		roomObjects[11] = new Chair2();
+
+		roomObjects[12] = new Chair3();
+
 
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
@@ -180,60 +181,18 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 
+		roomObjects[10].add_Child(roomObjects[11].position_Object()); // chair2
+
+		roomObjects[10].add_Child(roomObjects[12].position_Object()); // chair3
+
+
+
 		// calculate and set angles for rotation
 		currAngle_L_R = Math.PI/2.0 * 3.0;
 		currAngle_U_D = 0;
 
-		// big mess of capability setting in order to get it to work somebody clean this up
-		sound1.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound1.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound1.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound1.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound1.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound1.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound1.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound1.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
-		sound1.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound1.setCapability(PointSound.ALLOW_MUTE_WRITE);
-		sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
-        sound2.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound2.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound2.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound2.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound2.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound2.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound2.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound2.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound2.setCapability(PointSound.ALLOW_POSITION_WRITE);
-        sound2.setCapability(PointSound.ALLOW_LOOP_WRITE);
-		sound2.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound2.setCapability(PointSound.ALLOW_MUTE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound3.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound3.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound3.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound3.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound3.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound3.setCapability(PointSound.ALLOW_POSITION_WRITE);
-		sound3.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound3.setCapability(PointSound.ALLOW_MUTE_WRITE);
 
-		// add sounds to Transform Group of the Scene
-		BoundingSphere soundBounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
-        sound1.setSchedulingBounds(soundBounds);
-        sound2.setSchedulingBounds(soundBounds);
-        sound3.setSchedulingBounds(soundBounds);
-		roomTG.addChild(sound1);
-		roomTG.addChild(sound2);
-		roomTG.addChild(sound3);
-
-		// Create a sound player
-		SimpleSoundsBehavior player = new SimpleSoundsBehavior(sound1, sound2, sound3, url[0], url[1], url[2], soundBounds);
-		player.setSchedulingBounds(soundBounds);
-		roomTG.addChild(player);
+		// roomTG.addChild(player);
 
         return roomTG;
 	}
@@ -258,6 +217,86 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		// sceneTG.addChild(Commons.rotate_Behavior(7500, sceneTG));
 		
 		sceneTG.addChild(createRoom());                    // add the fan to the rotating 'sceneTG'
+
+		url = new URL[3];
+		// create all sounds; must be 3 in order for it to work
+		url[0] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
+        url[1] = Resources.getResource(fileFormat + "Sounds/" + "music2.wav");
+        url[2] = Resources.getResource(fileFormat + "Sounds/" + "music2.wav"); 
+
+
+		sound1 = new BackgroundSound();
+		sound2 = new PointSound();
+		sound3 = new PointSound();
+
+		// big mess of capability setting in order to get it to work somebody clean this up
+
+        sound1.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound1.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound1.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound1.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound1.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound1.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound1.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound1.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
+
+		sound1.setCapability(PointSound.ALLOW_POSITION_WRITE);
+
+		sound1.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound1.setCapability(PointSound.ALLOW_MUTE_WRITE);
+
+		sound2.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound2.setCapability(PointSound.ALLOW_MUTE_WRITE);
+
+		sound3.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound3.setCapability(PointSound.ALLOW_MUTE_WRITE);
+
+        sound2.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound2.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound2.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound2.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound2.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound2.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound2.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound2.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound2.setCapability(PointSound.ALLOW_POSITION_WRITE);
+        sound2.setCapability(PointSound.ALLOW_LOOP_WRITE);
+        sound3.setCapability(PointSound.ALLOW_LOOP_WRITE);
+
+        sound3.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound3.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound3.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound3.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound3.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound3.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound3.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound3.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound3.setCapability(PointSound.ALLOW_POSITION_WRITE);
+
+
+		// add sounds to Transform Group of the Scene
+		BoundingSphere soundBounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
+        sound1.setSchedulingBounds(soundBounds);
+        sound2.setSchedulingBounds(soundBounds);
+        sound3.setSchedulingBounds(soundBounds);
+		sceneTG.addChild(sound1);
+		sceneTG.addChild(sound2);
+		sceneTG.addChild(sound3);
+
+		// sound1.setMute(true);
+		// sound2.setMute(true);
+		// sound3.setMute(true);
+
+
+		// Create a sound player
+	
+		SimpleSoundsBehavior player = new SimpleSoundsBehavior(sound1, sound2, sound3, url[0], url[1], url[2], soundBounds);
+		player.setSchedulingBounds(soundBounds);
+
+		sceneTG.addChild(player);
+
+
 
 		sceneBG.addChild(sceneTG);                         // keep the following stationary
 		sceneBG.addChild(Commons.add_Lights(Commons.White, 1));
