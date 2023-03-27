@@ -2,12 +2,13 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+//package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,9 @@ import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import org.jdesktop.j3d.examples.Resources;
+import org.jdesktop.j3d.examples.sound.SimpleSoundsBehavior;
+import org.jdesktop.j3d.examples.sound.audio.JOALMixer;
 import org.jogamp.java3d.*;
 import org.jogamp.java3d.loaders.IncorrectFormatException;
 import org.jogamp.java3d.loaders.ParsingErrorException;
@@ -25,7 +29,7 @@ import org.jogamp.java3d.utils.geometry.Box;
 import org.jogamp.java3d.utils.geometry.Primitive;
 import org.jogamp.java3d.utils.image.TextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
-
+import org.jogamp.java3d.utils.universe.Viewer;
 import org.jogamp.java3d.utils.picking.PickResult;
 import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.vecmath.*;
@@ -40,7 +44,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -56,8 +60,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	static double currAngle_L_R;
 	static double currAngle_U_D;
 
-
-
+	// variables for sound
+	private static URL[] url = new URL[3];
+	private static BackgroundSound sound1 = new BackgroundSound();
+	private static PointSound sound2 = new PointSound();
+	private static PointSound sound3 = new PointSound();
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -126,56 +133,119 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	}
 
 	private static TransformGroup createRoom() {
-
-
 		TransformGroup roomTG = new TransformGroup();
 
 		Transform3D tableTex = new Transform3D();
 
+		// create all sounds; must be 3 in order for it to work
+		url[0] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
+        url[1] = Resources.getResource(fileFormat + "Sounds/" + "music.wav");
+        url[2] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
+
 		roomObjects = new RoomObjects[OBJ_NUM];
 		TransformGroup desktop_Items = new TransformGroup();
 		
-		roomObjects[0] = new TableObject(); //For table
-		roomObjects[1] = new LeftSpeaker(); //Left speaker
-		roomObjects[2] = new RightSpeaker(); //right speaker
-		roomObjects[3] = new tableMat(); //Table Mat
-		roomObjects[4] = new rightScreen();
-		roomObjects[5] = new leftScreen();
-		roomObjects[6] = new CPU();
-		roomObjects[7] = new Chair();
-		roomObjects[8] = new tableWhiteMat();
+		roomObjects[0] = new TableObject(); // for table
+		roomObjects[1] = new LeftSpeaker(); // left speaker
+		roomObjects[2] = new RightSpeaker(); // right speaker
+		roomObjects[3] = new tableMat(); // table Mat
+		roomObjects[4] = new rightScreen(); // right screen
+		roomObjects[5] = new leftScreen(); // left screen
+		roomObjects[6] = new CPU(); // PC
+		roomObjects[7] = new Chair(); // chair
+		roomObjects[8] = new tableWhiteMat(); // mouse mat
 
-		roomObjects[9] = new PictureFrame();
+		roomObjects[9] = new PictureFrame(); // picture frame
 
-		roomObjects[10] = new Walls_Floors();
+		roomObjects[10] = new Walls_Floors(); // room itself
 
-
-		
-
-		
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
 		desktop_Items.setTransform(tableTex);
 		
 		roomTG = roomObjects[10].position_Object(); // walls and floor
-		roomObjects[10].add_Child(desktop_Items);
-		roomObjects[10].add_Child(roomObjects[0].position_Object());
-		roomObjects[10].add_Child(roomObjects[1].position_Object());
-		roomObjects[10].add_Child(roomObjects[2].position_Object());
-		roomObjects[10].add_Child(roomObjects[3].position_Object());
-		roomObjects[10].add_Child(roomObjects[4].position_Object());
-		roomObjects[10].add_Child(roomObjects[5].position_Object());
-		roomObjects[10].add_Child(roomObjects[6].position_Object());
-		roomObjects[10].add_Child(roomObjects[7].position_Object());
-		roomObjects[10].add_Child(roomObjects[8].position_Object());
+		roomObjects[10].add_Child(desktop_Items); // table texture
+		roomObjects[10].add_Child(roomObjects[0].position_Object()); // table
+		roomObjects[10].add_Child(roomObjects[1].position_Object()); // left speaker
+		roomObjects[10].add_Child(roomObjects[2].position_Object()); // right speaker
+		roomObjects[10].add_Child(roomObjects[3].position_Object()); // table Mat
+		roomObjects[10].add_Child(roomObjects[4].position_Object()); // right screen
+		roomObjects[10].add_Child(roomObjects[5].position_Object()); // left screen
+		roomObjects[10].add_Child(roomObjects[6].position_Object()); // PC
+		roomObjects[10].add_Child(roomObjects[7].position_Object()); // chair
+		roomObjects[10].add_Child(roomObjects[8].position_Object()); // mouse mat
 
 		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 
+		// calculate and set angles for rotation
 		currAngle_L_R = Math.PI/2.0 * 3.0;
 		currAngle_U_D = 0;
 
-		
+		// big mess of capability setting in order to get it to work somebody clean this up
+		sound1.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound1.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound1.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound1.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound1.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound1.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound1.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound1.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
+		sound1.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound1.setCapability(PointSound.ALLOW_MUTE_WRITE);
+		sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
+        sound2.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound2.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound2.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound2.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound2.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound2.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound2.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound2.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound2.setCapability(PointSound.ALLOW_POSITION_WRITE);
+        sound2.setCapability(PointSound.ALLOW_LOOP_WRITE);
+		sound2.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound2.setCapability(PointSound.ALLOW_MUTE_WRITE);
+        sound3.setCapability(PointSound.ALLOW_ENABLE_WRITE);
+        sound3.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
+        sound3.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
+        sound3.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
+        sound3.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
+        sound3.setCapability(PointSound.ALLOW_RELEASE_WRITE);
+        sound3.setCapability(PointSound.ALLOW_DURATION_READ);
+        sound3.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
+        sound3.setCapability(PointSound.ALLOW_POSITION_WRITE);
+		sound3.setCapability(PointSound.ALLOW_MUTE_READ);
+		sound3.setCapability(PointSound.ALLOW_MUTE_WRITE);
+
+		// add sounds to Transform Group of the Scene
+		BoundingSphere soundBounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
+        sound1.setSchedulingBounds(soundBounds);
+        sound2.setSchedulingBounds(soundBounds);
+        sound3.setSchedulingBounds(soundBounds);
+		roomTG.addChild(sound1);
+		roomTG.addChild(sound2);
+		roomTG.addChild(sound3);
+
+		// Create a sound player
+		SimpleSoundsBehavior player = new SimpleSoundsBehavior(sound1, sound2, sound3, url[0], url[1], url[2], soundBounds);
+		player.setSchedulingBounds(soundBounds);
+		roomTG.addChild(player);
+
         return roomTG;
+	}
+
+	private void enableAudio(SimpleUniverse simple_U) {
+        JOALMixer mixer = null;  // create a joalmixer
+        Viewer viewer = simple_U.getViewer();
+        viewer.getView().setBackClipDistance(20.0f); // disappear beyond 20f 
+        if (mixer == null && viewer.getView().getUserHeadToVworldEnable()) {  
+        	mixer = new JOALMixer(viewer.getPhysicalEnvironment());
+			if (!mixer.initialize()) { // add audio device
+				System.out.println("Open AL failed to init");
+				viewer.getPhysicalEnvironment().setAudioDevice(null);
+			} 
+		} 
 	}
 
 	/* a function to build the content branch, including the fan and other environmental settings */
@@ -220,16 +290,14 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		wallNames[3] = "wall4.jpg";
 		currentWall = 0;
 
-
 		SimpleUniverse su = new SimpleUniverse(canvas);    // create a SimpleUniverse
-
 
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
 		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
-
+		enableAudio(su);
 		setLayout(new BorderLayout());
 		add("Center", canvas);
 		frame.setSize(1920, 1080);                           // set the size of the JFrame
@@ -250,18 +318,15 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		
 		// Load the image
 		textureLoader = new TextureLoader(fileFormat + "Images/" + fileName, null);
-		image         = textureLoader.getImage();
+		image = textureLoader.getImage();
 	
 		// Create the Texture
-		texture       = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA,
-										image.getWidth(), image.getHeight());
+		texture = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, image.getWidth(), image.getHeight());
 		texture.setImage(0, image);  // Level 0 indicates no mip-mapping
 		// Create the Appearance
 		app.setTexture(texture);
 	}
 	
-
-
 	@Override
 	public void mouseClicked(MouseEvent event) {
 		int x = event.getX(); int y = event.getY();        // mouse coordinates
@@ -299,7 +364,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		} 
 	}
 
-
 	public void mouseEntered(MouseEvent arg0) { }
 	public void mouseExited(MouseEvent arg0) { }
 	public void mousePressed(MouseEvent e) { }
@@ -309,7 +373,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	public static void moveObjectLR(TransformGroup trsm, double angle){
 		Transform3D temp = new Transform3D();
 
-
 		// Transform3D tx = new Transform3D();
 		Transform3D ty = new Transform3D();
 		// Transform3D tz = new Transform3D();
@@ -317,11 +380,9 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		currAngle_L_R += angle;
 		// currAngle_U_D += angle;
 
-
 		if(currAngle_L_R >= Math.PI*2.0){
 			currAngle_L_R -= Math.PI*2.0;
 		}
-
 
 		// tx.rotX(currAngle_U_D);
 		// temp.mul(tx);
@@ -362,7 +423,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	// 	trsm.setTransform(temp);
 	// }
 
-
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -390,14 +450,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
-	
-	}
-
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		
-	}
+	public void keyReleased(KeyEvent e) {}
+	public void keyTyped(KeyEvent e) {}
 }
