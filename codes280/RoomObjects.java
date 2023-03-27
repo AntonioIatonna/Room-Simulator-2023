@@ -330,7 +330,7 @@ class CPU extends RoomObjects{
 	}
 }
 class Chair extends RoomObjects{
-	public Transform3D translator;
+	public Transform3D trfm;
 	public Chair() {
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(1.0f,0f,0f);                   // use to move object for positioning  
@@ -340,16 +340,21 @@ class Chair extends RoomObjects{
 	}
 	
 	public TransformGroup position_Object() {
-		translator = new Transform3D();        // 4x4 matrix for translation
+	
+		
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
+
 		translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
 		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
 
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
-		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
 		objTG = new TransformGroup(trfm);  
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		objTG.addChild(objBG);                             // attach  to 'objTG'
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
 	}
@@ -360,7 +365,7 @@ class Chair extends RoomObjects{
 }
 
 class Chair2 extends RoomObjects{
-	public Transform3D translator;
+	public Transform3D trfm;
 	public Chair2() {
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(1.0f,0f,0f);                   // use to move object for positioning  
@@ -371,16 +376,20 @@ class Chair2 extends RoomObjects{
 	}
 	
 	public TransformGroup position_Object() {
-		translator = new Transform3D();        // 4x4 matrix for translation
+
+
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 		translator.setTranslation(new Vector3f(0f, 10.0f,2.8f));
 		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
 
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
-		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
-		objTG = new TransformGroup(trfm);  
+		objTG = new TransformGroup(trfm); 
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ); 
 		objTG.addChild(objBG);                             // attach  to 'objTG'
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
 	}
@@ -391,7 +400,7 @@ class Chair2 extends RoomObjects{
 }
 
 class Chair3 extends RoomObjects{
-	public Transform3D translator;
+	public Transform3D trfm;
 	public Chair3() {
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(1.0f,0f,0f);                   // use to move object for positioning  
@@ -402,15 +411,19 @@ class Chair3 extends RoomObjects{
 	}
 	
 	public TransformGroup position_Object() {
-		translator = new Transform3D();        // 4x4 matrix for translation
+
+
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
 		translator.setTranslation(new Vector3f(0f, 10.0f,2.8f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotX(Math.PI / 2 * 3);
-		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
 		objTG = new TransformGroup(trfm);  
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		objTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		objTG.addChild(objBG);                             // attach  to 'objTG'
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
 	}

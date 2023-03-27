@@ -400,28 +400,87 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		if (pickTool.pickClosest() != null) {
 			PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
 			Node clicked = (Node) pickResult.getNode(PickResult.PRIMITIVE);
+
+			Shape3D chairClicker = (Shape3D) pickResult.getNode(PickResult.SHAPE3D);
+
 			Walls_Floors temp = (Walls_Floors) roomObjects[10];
 			PictureFrame temp2 = (PictureFrame) roomObjects[9];
 
-			if(clicked.equals(temp.getFloor())){
-				Box trsm = (Box) temp.getFloor();
-				currentFloor++;
-				changeAppearance(trsm.getAppearance(), floorNames[currentFloor % 4]);
+			Chair chair1 = (Chair) roomObjects[7];
+			Chair2 chair2 = (Chair2) roomObjects[11];
+			Chair3 chair3 = (Chair3) roomObjects[12];
+
+			
+			// System.out.println(chairClicker);
+			if(clicked != null){
+				if(clicked.equals(temp.getFloor())){
+					Box trsm = (Box) temp.getFloor();
+					currentFloor++;
+					changeAppearance(trsm.getAppearance(), floorNames[currentFloor % 4]);
+				}
+				if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){
+					Box trsm1 = (Box) temp.getWall1();
+					Box trsm2 = (Box) temp.getWall2();
+					currentWall++;
+					changeAppearance(trsm1.getAppearance(), wallNames[currentWall % 4]);
+					changeAppearance(trsm2.getAppearance(), wallNames[currentWall % 4]);
+				}
+				else if(clicked.equals(temp2.getPicture())){
+					Box trsm = (Box) temp2.getPicture();
+					currentPicture++;
+					changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 6]);
+				}
 			}
-			if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){
-				Box trsm1 = (Box) temp.getWall1();
-				Box trsm2 = (Box) temp.getWall2();
-				currentWall++;
-				changeAppearance(trsm1.getAppearance(), wallNames[currentWall % 4]);
-				changeAppearance(trsm2.getAppearance(), wallNames[currentWall % 4]);
+			
+			if(chairClicker != null){
+				if(chairClicker.equals(chair1.obj_shape)){
+					TransformGroup chair1_TG = chair1.getTG();
+					TransformGroup chair2_TG = chair2.getTG();
+
+					Transform3D chair1_trsm = chair1.trfm;
+					chair1_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+
+					chair1_TG.setTransform(chair1_trsm);
+
+					Transform3D chair2_trsm = chair2.trfm;
+					chair2_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+
+					chair2_TG.setTransform(chair2_trsm);
+				}
+
+				else if(chairClicker.equals(chair2.obj_shape)){
+					TransformGroup chair2_TG = chair2.getTG();
+					TransformGroup chair3_TG = chair3.getTG();
+
+					Transform3D chair2_trsm = chair2.trfm;
+					chair2_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+
+					chair2_TG.setTransform(chair2_trsm);
+
+					Transform3D chair3_trsm = chair3.trfm;
+					chair3_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+
+					chair3_TG.setTransform(chair3_trsm);
+				}
+
+				else if(chairClicker.equals(chair3.obj_shape)){
+					TransformGroup chair3_TG = chair3.getTG();
+					TransformGroup chair1_TG = chair1.getTG();
+
+					Transform3D chair3_trsm = chair3.trfm;
+					chair3_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+
+					chair3_TG.setTransform(chair3_trsm);
+
+					Transform3D chair1_trsm = chair1.trfm;
+					chair1_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+
+					chair1_TG.setTransform(chair1_trsm);
+				}
 			}
-			else if(clicked.equals(temp2.getPicture())){
-				Box trsm = (Box) temp2.getPicture();
-				currentPicture++;
-				changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 6]);
-			}
-		} 
+			
 	}
+}
 
 	public void mouseEntered(MouseEvent arg0) { }
 	public void mouseExited(MouseEvent arg0) { }
