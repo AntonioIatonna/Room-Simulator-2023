@@ -164,6 +164,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[12] = new Chair3();
 
+		roomObjects[13] = new Radio();
+
 
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
@@ -186,6 +188,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[10].add_Child(roomObjects[11].position_Object()); // chair2
 
 		roomObjects[10].add_Child(roomObjects[12].position_Object()); // chair3
+
+		roomObjects[10].add_Child(roomObjects[13].position_Object());
 
 
 

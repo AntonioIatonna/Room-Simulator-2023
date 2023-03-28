@@ -672,3 +672,37 @@ class Walls_Floors extends RoomObjects{
 
 }
 
+
+class Radio extends RoomObjects{
+	public Radio() {
+		scale = 0.5d;                                        // use to scale up/down original size
+		post = new Vector3f(2f,1f,2f);                   // use to move object for positioning  
+		transform_Object("radioFull");                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = new Color3f(0.15f, 0.15f, 0.15f); // set  color 		                                              
+		obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+	
+	public TransformGroup position_Object() {
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
+		translator.setTranslation(new Vector3f(2f,1f,2f));
+		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
+		rotator.rotX(36.1);
+		
+		Transform3D rotator1 = new Transform3D();           // 4x4 matrix for rotation
+		rotator1.rotZ(20);
+		
+		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm.setScale(0.5);
+		trfm.mul(translator);                              // apply translation next
+		trfm.mul(rotator);                                 // apply rotation first
+		trfm.mul(rotator1);  
+		objTG = new TransformGroup(trfm);  
+		objTG.addChild(objBG);                             // attach  to 'objTG'
+		return objTG;                                      // use 'objTG' to attach  to the previous TG
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);   
+	}
+
+}
