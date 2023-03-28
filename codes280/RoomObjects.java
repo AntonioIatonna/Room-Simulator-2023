@@ -2,18 +2,22 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-// package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.Frame;
 import java.awt.Shape;
 import java.io.FileNotFoundException;
 
+import javax.xml.soap.Text;
+
 import org.jogamp.java3d.Alpha;
+import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.ImageComponent2D;
+import org.jogamp.java3d.Light;
 import org.jogamp.java3d.Material;
 import org.jogamp.java3d.Node;
 import org.jogamp.java3d.PointLight;
@@ -60,7 +64,7 @@ public abstract class RoomObjects {
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
 	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -124,6 +128,7 @@ public abstract class RoomObjects {
 		mtl.setEmissiveColor(mtl_clr[3]);                  // use it to enlighten a button
 		mtl.setLightingEnable(true);
 
+
 		app.setMaterial(mtl);                              // set appearance's material
 
 		obj_shape.setAppearance(app);                      // set object's appearance
@@ -158,6 +163,11 @@ public abstract class RoomObjects {
 	   appearance.setCapability(flags);
        appearance.setTexture(texture);
 
+		TextureAttributes test = new TextureAttributes();
+		test.setTextureMode(TextureAttributes.REPLACE | TextureAttributes.NICEST);
+
+	   appearance.setTextureAttributes(test);
+
        return appearance;       
     }	
 }
@@ -172,7 +182,26 @@ class TableObject extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		objTG.addChild(objBG);                             // attach  to 'objTG'
+			// Code to add Lights: 
+			objTG.addChild(add_Lights(Commons.Red, 1));   
+			TransformGroup strip = new TransformGroup();
+			Transform3D strip_trsm = new Transform3D();
+			strip_trsm.setTranslation(new Vector3f(-0.6f, 0.4f, 0.0f));
+			strip.setTransform(strip_trsm);
+			strip.addChild(new Box(0.01f,0.01f,0.8f, Commons.obj_Appearance(Commons.Red)));
+			add_Child(strip);
+	
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
+	}
+
+	private BranchGroup add_Lights(Color3f clr, int p_num) {
+		BranchGroup lightBG = new BranchGroup();
+
+		AmbientLight ambientLight = new AmbientLight(clr);
+		ambientLight.setInfluencingBounds(new BoundingSphere(new Point3d(0.0f, 0.0f, 0.0f), 0.1f));
+
+		lightBG.addChild(ambientLight);
+		return lightBG;
 	}
 
 	public void add_Child(TransformGroup nextTG) {
@@ -431,9 +460,9 @@ class Shelf extends RoomObjects{
 
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0.5f, -0.1f,3.3f));
+		translator.setTranslation(new Vector3f(-2.5f, -1.7f,-0.9f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
-		rotator.rotZ(0);
+		rotator.rotY(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
@@ -451,7 +480,35 @@ class Bed extends RoomObjects {
 	public Bed(){
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
-		transform_Object("bed");                      // set transformation to 'objTG' and load object file
+		transform_Object("bedFrame");                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color
+		app = makeTexture("wood.jpg");
+		obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+
+	public TransformGroup position_Object() {
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
+		translator.setTranslation(new Vector3f(0.0f, -0.2f, 0.0f));
+		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
+		rotator.rotZ(0);
+		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm.mul(translator);                              // apply translation next
+		trfm.mul(rotator);                                 // apply rotation first
+		objTG = new TransformGroup(trfm);
+		objTG.addChild(objBG);                             // attach  to 'objTG'
+		return objTG;                                      // use 'objTG' to attach  to the previous TG
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);
+	}
+}
+
+class Matress extends RoomObjects {
+	public Matress(){
+		scale = 1.0d;                                        // use to scale up/down original size
+		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
+		transform_Object("matress");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color
 		app = makeTexture("mattress.jpg");
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
@@ -459,7 +516,68 @@ class Bed extends RoomObjects {
 
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0.5f, -0.1f,3.3f));
+		translator.setTranslation(new Vector3f(0.0f, 0.0f, 0.04f));
+		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
+		rotator.rotZ(0);
+		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm.mul(translator);                              // apply translation next
+		trfm.mul(rotator);                                 // apply rotation first
+		objTG = new TransformGroup(trfm);
+		objTG.addChild(objBG);                             // attach  to 'objTG'
+		return objTG;                                      // use 'objTG' to attach  to the previous TG
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);
+	}
+}
+
+class Pillow extends RoomObjects {
+	public Pillow(){
+		scale = 1.0d;                                        // use to scale up/down original size
+		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
+		transform_Object("pillow");                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = Commons.White; // set  color
+		// app = makeTexture("matress.jpg");
+		obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+
+	public TransformGroup position_Object() {
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
+		translator.setTranslation(new Vector3f(0.05f, 0.2f, 0.25f));
+		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
+		rotator.rotZ(0);
+		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
+		trfm.mul(translator);                              // apply translation next
+		trfm.mul(rotator);                                 // apply rotation first
+		objTG = new TransformGroup(trfm);
+		objTG.addChild(objBG);                             // attach  to 'objTG'
+		return objTG;                                      // use 'objTG' to attach  to the previous TG
+	}
+
+	public void add_Child(TransformGroup nextTG) {
+		objTG.addChild(nextTG);
+	}
+}
+
+class BedSheets extends RoomObjects {
+	public BedSheets(){
+		scale = 1.0d;                                        // use to scale up/down original size
+		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
+		transform_Object("sheets");                      // set transformation to 'objTG' and load object file
+		mtl_clr[1] = Commons.Green; // set  color
+		// app = makeTexture("matress.jpg");
+		obj_Appearance();                                  // set appearance after converting object node to Shape3D
+	}
+
+	public TransformGroup position_Object() {
+		obj_shape.setCapability(Shape3D.ALLOW_APPEARANCE_WRITE);
+		obj_shape.setCapability(Shape3D.ALLOW_APPEARANCE_READ);
+		obj_shape.setCapability(Shape3D.ALLOW_APPEARANCE_OVERRIDE_WRITE);
+		obj_shape.setCapability(Shape3D.ALLOW_APPEARANCE_OVERRIDE_READ);
+
+		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
+		translator.setTranslation(new Vector3f(0.23f, 0.0f, 0.0f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
@@ -478,18 +596,19 @@ class Bed extends RoomObjects {
 class Door extends RoomObjects{
 	public Door(){
 		scale = 1.0d;                                        // use to scale up/down original size
-		post = new Vector3f(1.2f,0f,0f);                   // use to move object for positioning
+		post = new Vector3f(-1.2f,0f,-1f);                   // use to move object for positioning
 		transform_Object("door");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(0.27f, 0.13f, 0.08f); // set  color
-		app = makeTexture("wood.jpg");
+		app = makeTexture("door_wood.jpg");
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0.5f, -0.1f,3.3f));
+		translator.setTranslation(new Vector3f(-2.92f, -1.3f,-2.8f));
+		translator.setScale(1.5f);
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
-		rotator.rotZ(0);
+		rotator.rotY(Math.PI / 2);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
@@ -542,7 +661,7 @@ class PictureFrame extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        
-		translator.setTranslation(new Vector3f(-2.95f, 0f,-2.5f));
+		translator.setTranslation(new Vector3f(-2.95f, 0f,2.5f));
 		Transform3D rotator1 = new Transform3D();  
 		Transform3D rotator2 = new Transform3D();          
 		rotator1.rotZ(Math.PI / 2 * 1);
@@ -559,31 +678,12 @@ class PictureFrame extends RoomObjects{
 		pic.addChild(new Box(0.35f,0.01f,0.55f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("picture1.jpg")));
 		add_Child(pic);
 
-		// Code to add Lights: 
-		objTG.addChild(add_Lights(Commons.Red, 1));   
-		TransformGroup strip = new TransformGroup();
-		Transform3D strip_trsm = new Transform3D();
-		strip_trsm.setTranslation(new Vector3f(0.0f, 0.0f, 0.0f));
-		strip.addChild(new Box(0.8f,0.01f,0.01f, Commons.obj_Appearance(Commons.Red)));
-		add_Child(strip);
+	
 
 		return objTG;                                     
 	}
 
-	private BranchGroup add_Lights(Color3f clr, int p_num) {
-		BranchGroup lightBG = new BranchGroup();
-		Point3f atn = new Point3f(0.5f, 0.0f, 0.0f);
-		PointLight ptLight;
-		float adjt = 1.0f;
-		for (int i = 0; (i < p_num) && (i < 2); i++) {
-			if (i > 0) 
-				adjt = -1f; 
-			ptLight = new PointLight(clr, new Point3f(3.0f * adjt, 1.0f, 3.0f  * adjt), atn);
-			ptLight.setInfluencingBounds(new BoundingSphere(new Point3d(0.0f, 0.0f, 0.0f), 0.5f));
-			lightBG.addChild(ptLight);
-		}
-		return lightBG;
-	}
+
 
 	public Node getPicture(){
 		TransformGroup temp = (TransformGroup) objTG.getChild(1);
@@ -664,10 +764,13 @@ class Walls_Floors extends RoomObjects{
         objBG.addChild(wall1);
         objBG.addChild(wall2);
 
+	
 		// makeRotations();                                 // set appearance after converting object node to Shape3D
 
 		return objTG;                                     
 	}
+
+
 
 	private void makeRotations(){
 		objRG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -736,7 +839,7 @@ class Walls_Floors extends RoomObjects{
 
 class Radio extends RoomObjects{
 	public Radio() {
-		scale = 0.5d;                                        // use to scale up/down original size
+		scale = 0.2d;                                        // use to scale up/down original size
 		post = new Vector3f(2f,1f,2f);                   // use to move object for positioning  
 		transform_Object("radioFull");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(0.15f, 0.15f, 0.15f); // set  color 		                                              
@@ -745,12 +848,13 @@ class Radio extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(2f,1f,2f));
+		translator.setScale(0.7f);
+		translator.setTranslation(new Vector3f(-5.1f,-2.0f,-1.8f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
-		rotator.rotX(36.1);
+		rotator.rotX(Math.PI / 2 * 3);
 		
 		Transform3D rotator1 = new Transform3D();           // 4x4 matrix for rotation
-		rotator1.rotZ(20);
+		rotator1.rotZ(Math.PI / 2);
 		
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.setScale(0.5);

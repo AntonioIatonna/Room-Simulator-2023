@@ -1,7 +1,7 @@
 # Blender 3.4.1
 # www.blender.org
 mtllib pillow.mtl
-o Cube.003
+g Cube.003
 v -3.054894 0.810246 -2.082733
 v -3.047528 0.865008 -2.082974
 v -3.880811 0.930643 -2.082909

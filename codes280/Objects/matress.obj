@@ -1,7 +1,7 @@
 # Blender 3.4.1
 # www.blender.org
 mtllib matress.mtl
-o Cube.002
+g Cube.002
 v -4.095197 0.404682 -1.591638
 v -4.018870 0.328355 -1.591638
 v -4.018870 0.404682 -1.515311

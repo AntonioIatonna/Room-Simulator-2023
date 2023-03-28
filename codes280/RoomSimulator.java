@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-// package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -37,14 +37,23 @@ import org.jogamp.vecmath.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.util.Random;
+
 public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	private static final long serialVersionUID = 1L;
 	private static JFrame frame;
 	private Canvas3D canvas;
 
+	protected static int shine = 32;                                // specify common values for object's appearance
+	protected static Color3f[] mtl_clr = {new Color3f(1.000000f, 1.000000f, 1.000000f),
+			new Color3f(0.772500f, 0.654900f, 0.000000f),	
+			new Color3f(0.175000f, 0.175000f, 0.175000f),
+			new Color3f(0.000000f, 0.000000f, 0.000000f)};
+	
+
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -182,6 +191,14 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[16] = new Door();
 
+		roomObjects[17] = new Matress();
+
+		roomObjects[18] = new Pillow();
+
+		roomObjects[19] = new BedSheets();
+
+
+
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.00f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
 		desktop_Items.setTransform(tableTex);
@@ -205,10 +222,28 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[10].add_Child(roomObjects[11].position_Object()); // chair2
 		roomObjects[10].add_Child(roomObjects[12].position_Object()); // chair3
 		roomObjects[10].add_Child(roomObjects[13].position_Object()); // radio
-		roomObjects[10].add_Child(roomObjects[14].position_Object()); //bed
 		roomObjects[10].add_Child(roomObjects[15].position_Object()); // shelf
 		roomObjects[10].add_Child(roomObjects[16].position_Object()); // door
 
+		TransformGroup bed_TG = new TransformGroup();
+		Transform3D bed_trsm = new Transform3D();
+		Transform3D bed_rot = new Transform3D();
+		
+		bed_trsm.setScale(1.5d);
+		bed_trsm.setTranslation(new Vector3d(-1.0f, -2.2f, 2.3f));
+		
+		bed_rot.rotY(Math.PI / 2);
+		
+		bed_trsm.mul(bed_rot);
+		bed_TG.setTransform(bed_trsm);
+
+
+		bed_TG.addChild(roomObjects[14].position_Object()); // bed frame
+		bed_TG.addChild(roomObjects[17].position_Object()); // matress
+		bed_TG.addChild(roomObjects[18].position_Object()); // pillow
+		bed_TG.addChild(roomObjects[19].position_Object()); // bed sheets
+
+		roomTG.addChild(bed_TG);
 		// calculate and set angles for rotation
 		currAngle_L_R = Math.PI/2.0 * 3.0;
 		currAngle_U_D = 0;
@@ -317,6 +352,16 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		pickTool = new PickTool( sceneBG );                // allow picking of objects in 'sceneBG'
 		pickTool.setMode(PickTool.GEOMETRY);                 // pick by bounding volume
 
+
+		// Background Stuff:
+		Background myBackground = new Background(); 
+		// Add image: (NOTE: The file directory works on my linux machine -> if you cannot open the file -> you can change the file directory)
+		myBackground.setImage(new TextureLoader(fileFormat + "Images/" + "galaxy.jpg", null).getImage()); 
+		myBackground.setImageScaleMode(Background.SCALE_FIT_ALL); 
+
+		myBackground.setApplicationBounds(sceneBG.getBounds());
+		sceneBG.addChild(myBackground);
+
 		return sceneBG;
 	}
 
@@ -421,6 +466,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			Chair chair1 = (Chair) roomObjects[7];
 			Chair2 chair2 = (Chair2) roomObjects[11];
 			Chair3 chair3 = (Chair3) roomObjects[12];
+
+			BedSheets bed_sheets = (BedSheets) roomObjects[19];
 			
 			// System.out.println(objectClicker);
 			if(clicked != null){
@@ -506,6 +553,22 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 						sound2.setPause(false);
 						sound3.setPause(false);
 					}
+				}
+
+				else if(objectClicker.equals(bed_sheets.obj_shape)){
+					Random rd = new Random(); 
+					Appearance app = new Appearance();
+					Material mtl = new Material();                     // define material's attributes
+					mtl.setShininess(shine);
+					mtl.setAmbientColor(mtl_clr[0]);                   // use them to define different materials
+					mtl.setDiffuseColor(new Color3f(rd.nextFloat(), rd.nextFloat(), rd.nextFloat()));
+					mtl.setSpecularColor(mtl_clr[2]);
+					mtl.setEmissiveColor(mtl_clr[3]);                  // use it to enlighten a button
+					mtl.setLightingEnable(true);
+
+					app.setMaterial(mtl);                              // set appearance's material
+
+					bed_sheets.obj_shape.setAppearance(app);         
 				}
 			}
 		}

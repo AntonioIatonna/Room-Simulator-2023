@@ -1,7 +1,7 @@
 # Blender 3.4.1
 # www.blender.org
 mtllib sheets.mtl
-o Plane.001
+g Plane.001
 v -2.933674 0.398911 -1.370026
 v 1.190742 0.329997 -1.209066
 v -2.951473 0.415690 -4.226081

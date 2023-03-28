@@ -1,7 +1,7 @@
 # Blender 3.4.1
 # www.blender.org
 mtllib bedFrame.mtl
-o Cube.001
+g Cube.001
 v -4.153610 -0.028761 -1.456898
 v -4.095197 0.425996 -1.515311
 v -4.153610 -0.028761 -4.153610
