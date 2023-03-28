@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-// package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.Frame;
 import java.awt.Shape;
@@ -60,7 +60,7 @@ public abstract class RoomObjects {
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
 	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
 	
 
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
@@ -191,7 +191,7 @@ class TableObject extends RoomObjects{
 class LeftSpeaker extends RoomObjects{
 	public LeftSpeaker() {
 		scale = 1.2d;                                        // use to scale up/down original size
-		post = new Vector3f(0f,0f,4.2f);                   // use to move object for positioning  
+		post = new Vector3f(0f,0f,4.0f);                   // use to move object for positioning  
 		transform_Object("leftSpeaker");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color 		                                              
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
@@ -199,7 +199,7 @@ class LeftSpeaker extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0f,0f,4.3f));
+		translator.setTranslation(new Vector3f(-0.15f,-0.15f,4.0f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
@@ -217,7 +217,7 @@ class LeftSpeaker extends RoomObjects{
 class RightSpeaker extends RoomObjects{
 	public RightSpeaker() {
 		scale = 1.2d;                                        // use to scale up/down original size
-		post = new Vector3f(0f,0f,2.3f);                   // use to move object for positioning  
+		post = new Vector3f(0f,-0.15f,2.15f);                   // use to move object for positioning  
 		transform_Object("rightSpeaker");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color 		                                              
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
@@ -235,7 +235,7 @@ class RightSpeaker extends RoomObjects{
 class tableMat extends RoomObjects{
 	public tableMat() {
 		scale = 1.0d;                                        // use to scale up/down original size
-		post = new Vector3f(-0.1f,-0.4f,3.1f);                   // use to move object for positioning  
+		post = new Vector3f(-0.25f,-0.45f,3.1f);                   // use to move object for positioning  
 		transform_Object("tableMat");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(0.35f, 0.35f, 0.35f); // set  color 		                                              
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
@@ -261,7 +261,7 @@ class rightScreen extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0f, 0f,3.0f));
+		translator.setTranslation(new Vector3f(-0.2f, -0.2f,2.7f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
@@ -287,7 +287,7 @@ class leftScreen extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0f, 0f,3.67f));
+		translator.setTranslation(new Vector3f(-0.2f, -0.2f,3.4f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition
@@ -333,7 +333,7 @@ class Chair extends RoomObjects{
 	public Transform3D trfm;
 	public Chair() {
 		scale = 1.0d;                                        // use to scale up/down original size
-		post = new Vector3f(1.0f,0f,0f);                   // use to move object for positioning  
+		post = new Vector3f(0.0f,0f,0f);                   // use to move object for positioning  
 		transform_Object("Chair");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = new Color3f(1.0f, 1.0f, 1.0f); // set  color 		                                              
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
@@ -344,11 +344,10 @@ class Chair extends RoomObjects{
 		
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 
-		translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
-		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+		translator.setTranslation(new Vector3f(1.2f, -2.0f,2.0f));
 
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
-		rotator.rotZ(0);
+		rotator.rotY(Math.PI / 2);
 		trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
@@ -379,8 +378,9 @@ class Chair2 extends RoomObjects{
 
 
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0f, 10.0f,2.8f));
-		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+
+		translator.setTranslation(new Vector3f(1.2f, 20.0f,2.4f));
+
 
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
@@ -414,8 +414,8 @@ class Chair3 extends RoomObjects{
 
 
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
-		translator.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+		
+		translator.setTranslation(new Vector3f(1.2f, 20.0f,2.8f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotX(Math.PI / 2 * 3);
 		trfm = new Transform3D();              // 4x4 matrix for composition
@@ -445,7 +445,7 @@ class tableWhiteMat extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		translator.setTranslation(new Vector3f(0.5f, -0.1f,3.3f));
+		translator.setTranslation(new Vector3f(-0.05f, -0.4f,3.0f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotZ(0);
 		Transform3D trfm = new Transform3D();              // 4x4 matrix for composition

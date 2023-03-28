@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-package codesAI280;
-// package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -44,7 +44,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -145,7 +145,20 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 
 		roomObjects = new RoomObjects[OBJ_NUM];
+
+
+		// Move the Desk
+		TransformGroup deskSetup = new TransformGroup();
+		Transform3D deskSetup_trsm = new Transform3D();
+		Transform3D deskSetup_rot = new Transform3D();
+		deskSetup_rot.rotY(Math.PI / 2);
+		deskSetup_trsm.setTranslation(new Vector3f(-1.5f, -1.4f, 2.3f));
+		deskSetup_trsm.mul(deskSetup_rot);
+		deskSetup.setTransform(deskSetup_trsm);
+
+
 		TransformGroup desktop_Items = new TransformGroup();
+
 		
 		roomObjects[0] = new TableObject(); // for table
 		roomObjects[1] = new LeftSpeaker(); // left speaker
@@ -168,21 +181,24 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[13] = new Radio();
 
 
-		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.05f));
+		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.00f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
 		desktop_Items.setTransform(tableTex);
 		
 		roomTG = roomObjects[10].position_Object(); // walls and floor
-		roomObjects[10].add_Child(desktop_Items); // table texture
-		roomObjects[10].add_Child(roomObjects[0].position_Object()); // table
-		roomObjects[10].add_Child(roomObjects[1].position_Object()); // left speaker
-		roomObjects[10].add_Child(roomObjects[2].position_Object()); // right speaker
-		roomObjects[10].add_Child(roomObjects[3].position_Object()); // table Mat
-		roomObjects[10].add_Child(roomObjects[4].position_Object()); // right screen
-		roomObjects[10].add_Child(roomObjects[5].position_Object()); // left screen
-		roomObjects[10].add_Child(roomObjects[6].position_Object()); // PC
+		deskSetup.addChild(desktop_Items); // table texture
+		deskSetup.addChild(roomObjects[0].position_Object()); // table
+		deskSetup.addChild(roomObjects[1].position_Object()); // left speaker
+		deskSetup.addChild(roomObjects[2].position_Object()); // right speaker
+		deskSetup.addChild(roomObjects[3].position_Object()); // table Mat
+		deskSetup.addChild(roomObjects[4].position_Object()); // right screen
+		deskSetup.addChild(roomObjects[5].position_Object()); // left screen
+		deskSetup.addChild(roomObjects[6].position_Object()); // PC
+		deskSetup.addChild(roomObjects[8].position_Object()); // mouse mat
+
+		roomObjects[10].add_Child(deskSetup);
 		roomObjects[10].add_Child(roomObjects[7].position_Object()); // chair
-		roomObjects[10].add_Child(roomObjects[8].position_Object()); // mouse mat
+
 
 		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 
@@ -449,12 +465,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					TransformGroup chair2_TG = chair2.getTG();
 
 					Transform3D chair1_trsm = chair1.trfm;
-					chair1_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+					chair1_trsm.setTranslation(new Vector3f(1.2f, 20.0f,2.0f));
 
 					chair1_TG.setTransform(chair1_trsm);
 
 					Transform3D chair2_trsm = chair2.trfm;
-					chair2_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+					chair2_trsm.setTranslation(new Vector3f(1.2f, -1.7f,2.4f));
 
 					chair2_TG.setTransform(chair2_trsm);
 				}
@@ -464,12 +480,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					TransformGroup chair3_TG = chair3.getTG();
 
 					Transform3D chair2_trsm = chair2.trfm;
-					chair2_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+					chair2_trsm.setTranslation(new Vector3f(1.2f, 20.0f,2.4f));
 
 					chair2_TG.setTransform(chair2_trsm);
 
 					Transform3D chair3_trsm = chair3.trfm;
-					chair3_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+					chair3_trsm.setTranslation(new Vector3f(1.2f, -2.0f,2.8f));
 
 					chair3_TG.setTransform(chair3_trsm);
 				}
@@ -479,12 +495,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					TransformGroup chair1_TG = chair1.getTG();
 
 					Transform3D chair3_trsm = chair3.trfm;
-					chair3_trsm.setTranslation(new Vector3f(0f, 10.0f,2.8f));
+					chair3_trsm.setTranslation(new Vector3f(1.2f, 20.0f,2.8f));
 
 					chair3_TG.setTransform(chair3_trsm);
 
 					Transform3D chair1_trsm = chair1.trfm;
-					chair1_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
+					chair1_trsm.setTranslation(new Vector3f(1.2f, -2.0f,2.0f));
 
 					chair1_TG.setTransform(chair1_trsm);
 				}
