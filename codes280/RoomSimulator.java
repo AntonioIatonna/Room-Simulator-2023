@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+// package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -44,7 +44,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private Canvas3D canvas;
 
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 20;
 
 	static Boolean pressed;
@@ -70,6 +70,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	private static BackgroundSound sound1;
 	private static PointSound sound2;
 	private static PointSound sound3;
+	private static int flag = 0;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -251,12 +252,18 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		sound1.setCapability(PointSound.ALLOW_MUTE_READ);
 		sound1.setCapability(PointSound.ALLOW_MUTE_WRITE);
+		sound1.setCapability(PointSound.ALLOW_PAUSE_READ);
+		sound1.setCapability(PointSound.ALLOW_PAUSE_WRITE);
 
 		sound2.setCapability(PointSound.ALLOW_MUTE_READ);
 		sound2.setCapability(PointSound.ALLOW_MUTE_WRITE);
+		sound2.setCapability(PointSound.ALLOW_PAUSE_READ);
+		sound2.setCapability(PointSound.ALLOW_PAUSE_WRITE);
 
 		sound3.setCapability(PointSound.ALLOW_MUTE_READ);
 		sound3.setCapability(PointSound.ALLOW_MUTE_WRITE);
+		sound3.setCapability(PointSound.ALLOW_PAUSE_READ);
+		sound3.setCapability(PointSound.ALLOW_PAUSE_WRITE);
 
         sound2.setCapability(PointSound.ALLOW_ENABLE_WRITE);
         sound2.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
@@ -354,7 +361,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
-		enableAudio(su);
 		setLayout(new BorderLayout());
 		add("Center", canvas);
 		frame.setSize(1920, 1080);                           // set the size of the JFrame
@@ -405,17 +411,17 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			PickResult pickResult = pickTool.pickClosest();// obtain the closest hit
 			Node clicked = (Node) pickResult.getNode(PickResult.PRIMITIVE);
 
-			Shape3D chairClicker = (Shape3D) pickResult.getNode(PickResult.SHAPE3D);
+			Shape3D objectClicker = (Shape3D) pickResult.getNode(PickResult.SHAPE3D);
 
 			Walls_Floors temp = (Walls_Floors) roomObjects[10];
 			PictureFrame temp2 = (PictureFrame) roomObjects[9];
-
+			
+			Radio temp3 = (Radio) roomObjects[13];
 			Chair chair1 = (Chair) roomObjects[7];
 			Chair2 chair2 = (Chair2) roomObjects[11];
 			Chair3 chair3 = (Chair3) roomObjects[12];
-
 			
-			// System.out.println(chairClicker);
+			// System.out.println(objectClicker);
 			if(clicked != null){
 				if(clicked.equals(temp.getFloor())){
 					Box trsm = (Box) temp.getFloor();
@@ -436,8 +442,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 				}
 			}
 			
-			if(chairClicker != null){
-				if(chairClicker.equals(chair1.obj_shape)){
+			if(objectClicker != null){
+				if(objectClicker.equals(chair1.obj_shape)){
 					TransformGroup chair1_TG = chair1.getTG();
 					TransformGroup chair2_TG = chair2.getTG();
 
@@ -452,7 +458,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair2_TG.setTransform(chair2_trsm);
 				}
 
-				else if(chairClicker.equals(chair2.obj_shape)){
+				else if(objectClicker.equals(chair2.obj_shape)){
 					TransformGroup chair2_TG = chair2.getTG();
 					TransformGroup chair3_TG = chair3.getTG();
 
@@ -467,7 +473,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair3_TG.setTransform(chair3_trsm);
 				}
 
-				else if(chairClicker.equals(chair3.obj_shape)){
+				else if(objectClicker.equals(chair3.obj_shape)){
 					TransformGroup chair3_TG = chair3.getTG();
 					TransformGroup chair1_TG = chair1.getTG();
 
@@ -480,6 +486,25 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair1_trsm.setTranslation(new Vector3f(0f, -1.0f,2.8f));
 
 					chair1_TG.setTransform(chair1_trsm);
+				}
+
+				else if(objectClicker.equals(temp3.obj_shape)){
+					if(flag == 0){
+						flag = 1;
+						enableAudio(su);
+					}
+					else if(flag == 1){
+						flag = 2;
+						sound1.setPause(true);
+						sound2.setPause(true);
+						sound3.setPause(true);
+					}
+					else if(flag == 2){
+						flag = 1;
+						sound1.setPause(false);
+						sound2.setPause(false);
+						sound3.setPause(false);
+					}
 				}
 			}
 			
