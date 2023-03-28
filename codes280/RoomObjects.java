@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+// package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.Frame;
 import java.awt.Shape;
@@ -60,7 +60,7 @@ public abstract class RoomObjects {
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
 	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 	
 
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
@@ -473,12 +473,15 @@ class PictureFrame extends RoomObjects{
 	
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        
-		translator.setTranslation(new Vector3f(0.0f, 0.0f,-2.5f));
-		Transform3D rotator = new Transform3D();           
-		rotator.rotX(Math.PI / 2 * 3);
+		translator.setTranslation(new Vector3f(-2.95f, 0f,-2.5f));
+		Transform3D rotator1 = new Transform3D();  
+		Transform3D rotator2 = new Transform3D();          
+		rotator1.rotZ(Math.PI / 2 * 1);
+		rotator2.rotY(Math.PI / 2 * 1);
 		Transform3D trfm = new Transform3D();              
 		trfm.mul(translator);                             
-		trfm.mul(rotator);
+		trfm.mul(rotator1);
+		trfm.mul(rotator2);
 		objTG = new TransformGroup(trfm);  
 		objTG.addChild(objBG);     
 		
@@ -589,10 +592,10 @@ class Walls_Floors extends RoomObjects{
 		
 
 
-		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS | Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall1.jpg")));
+		wall1.addChild(new Box(x, y, depth,Primitive.GENERATE_TEXTURE_COORDS | Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall2.jpg")));
 		wall1.setTransform(trsm_wall1);
 
-		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS| Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall1.jpg")));
+		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS| Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall2.jpg")));
 		wall2.setTransform(trsm_wall2);
 
         objBG.addChild(floor);

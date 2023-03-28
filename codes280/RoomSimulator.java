@@ -339,19 +339,20 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		currentFloor = 0;
 
 		wallNames = new String[4];
-		wallNames[0] = "wall1.jpg";
-		wallNames[1] = "wall2.jpg";
+		wallNames[0] = "wall2.jpg";
+		wallNames[1] = "wall1.jpg";
 		wallNames[2] = "wall3.jpg";
 		wallNames[3] = "wall4.jpg";
 		currentWall = 0;
 
-		pictureNames = new String[6];
+		pictureNames = new String[7];
 		pictureNames[0] = "picture1.jpg";
 		pictureNames[1] = "picture2.jpg";
 		pictureNames[2] = "picture3.jpg";
 		pictureNames[3] = "picture4.jpg";
 		pictureNames[4] = "picture5.jpg";
 		pictureNames[5] = "picture6.jpg";
+		pictureNames[6] = "picture7.jpg";
 		currentPicture = 0;
 
 		su = new SimpleUniverse(canvas);    // create a SimpleUniverse
@@ -438,7 +439,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 				else if(clicked.equals(temp2.getPicture())){
 					Box trsm = (Box) temp2.getPicture();
 					currentPicture++;
-					changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 6]);
+					changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 7]);
 				}
 			}
 			
