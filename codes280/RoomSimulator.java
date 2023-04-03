@@ -54,7 +54,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	private static PickTool pickTool;
 	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
-    private static final int OBJ_NUM = 20;
+    private static final int OBJ_NUM = 30;
 
 	static Boolean pressed;
 	static Boolean pressed_left;
@@ -197,6 +197,12 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[19] = new BedSheets();
 
+		roomObjects[20] = new FloatingShelf();
+
+		roomObjects[21] = new Ball();
+
+
+
 
 
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.00f));
@@ -224,6 +230,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[10].add_Child(roomObjects[13].position_Object()); // radio
 		roomObjects[10].add_Child(roomObjects[15].position_Object()); // shelf
 		roomObjects[10].add_Child(roomObjects[16].position_Object()); // door
+
+		roomObjects[10].add_Child(roomObjects[20].position_Object());
+		roomObjects[10].add_Child(roomObjects[21].position_Object());
+
 
 		TransformGroup bed_TG = new TransformGroup();
 		Transform3D bed_trsm = new Transform3D();
@@ -471,6 +481,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			
 			// System.out.println(objectClicker);
 			if(clicked != null){
+				System.out.println(clicked);
 				if(clicked.equals(temp.getFloor())){
 					Box trsm = (Box) temp.getFloor();
 					currentFloor++;
@@ -504,6 +515,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair2_trsm.setTranslation(new Vector3f(1.2f, -1.7f,2.4f));
 
 					chair2_TG.setTransform(chair2_trsm);
+					moveObjectLR(roomObjects[10].getTG(), 0.05);
+					moveObjectLR(roomObjects[10].getTG(), -0.05);
 				}
 
 				else if(objectClicker.equals(chair2.obj_shape)){
@@ -519,11 +532,15 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair3_trsm.setTranslation(new Vector3f(1.2f, -2.0f,2.8f));
 
 					chair3_TG.setTransform(chair3_trsm);
+					moveObjectLR(roomObjects[10].getTG(), 0.05);
+					moveObjectLR(roomObjects[10].getTG(), -0.05);
 				}
 
 				else if(objectClicker.equals(chair3.obj_shape)){
 					TransformGroup chair3_TG = chair3.getTG();
 					TransformGroup chair1_TG = chair1.getTG();
+					// TransformGroup chair2_TG = chair2.getTG();
+
 
 					Transform3D chair3_trsm = chair3.trfm;
 					chair3_trsm.setTranslation(new Vector3f(1.2f, 20.0f,2.8f));
@@ -534,6 +551,16 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair1_trsm.setTranslation(new Vector3f(1.2f, -2.0f,2.0f));
 
 					chair1_TG.setTransform(chair1_trsm);
+					moveObjectLR(roomObjects[10].getTG(), 0.05);
+					moveObjectLR(roomObjects[10].getTG(), -0.05);
+
+
+
+					// Transform3D chair2_trsm = chair2.trfm;
+					// chair2_trsm.setTranslation(new Vector3f(1.2f, -1.7f,2.4f));
+
+					// chair2_TG.setTransform(chair2_trsm);
+
 				}
 
 				else if(objectClicker.equals(temp3.obj_shape)){

@@ -1,7 +1,7 @@
 # Blender 3.4.1
 # www.blender.org
 mtllib floatingShelf.mtl
-o Cube.015
+g Cube.015
 v -4.153610 3.939181 2.993417
 v -4.153610 3.981876 2.993417
 v -4.153610 3.939181 0.993417
