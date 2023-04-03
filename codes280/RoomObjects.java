@@ -50,7 +50,6 @@ import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Point3f;
 import org.jogamp.vecmath.Vector3f;
 
-import FinalProject.ModellingThe3DWorld.CollisionDetectShapes;
 
 // This is where our objects will go:
                             // use 'post' to specify location

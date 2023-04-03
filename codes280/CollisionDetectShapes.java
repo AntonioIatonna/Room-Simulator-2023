@@ -1,6 +1,6 @@
 /* Copyright material for students taking COMP-2800 to work on assignment/labs/projects. */
 
-package FinalProject.ModellingThe3DWorld;
+package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.util.Iterator;
 

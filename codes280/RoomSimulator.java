@@ -8,17 +8,12 @@ package FinalProject.ModellingThe3DWorld.codes280;
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
 import java.io.FileNotFoundException;
-import java.net.URL;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import org.jdesktop.j3d.examples.Resources;
-import org.jdesktop.j3d.examples.sound.SimpleSoundsBehavior;
-import org.jdesktop.j3d.examples.sound.audio.JOALMixer;
 import org.jogamp.java3d.*;
 import org.jogamp.java3d.loaders.IncorrectFormatException;
 import org.jogamp.java3d.loaders.ParsingErrorException;
@@ -29,7 +24,6 @@ import org.jogamp.java3d.utils.geometry.Box;
 import org.jogamp.java3d.utils.geometry.Primitive;
 import org.jogamp.java3d.utils.image.TextureLoader;
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
-import org.jogamp.java3d.utils.universe.Viewer;
 import org.jogamp.java3d.utils.picking.PickResult;
 import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.vecmath.*;
@@ -74,12 +68,9 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 	protected static SimpleUniverse su;
 
-	// variables for sound
-	private static URL[] url;
-	private static BackgroundSound sound1;
-	private static PointSound sound2;
-	private static PointSound sound3;
-	private static int flag = 0;
+	private static int flag = 1;
+
+	protected static SoundUtilityJOAL soundJOAL;
 
 	private static TextureUnitState texState(String fn, TextureAttributes ta, TexCoordGeneration tcg) {
 		// Loads image:
@@ -263,18 +254,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
         return roomTG;
 	}
 
-	private void enableAudio(SimpleUniverse simple_U) {
-        JOALMixer mixer = null;  // create a joalmixer
-        Viewer viewer = simple_U.getViewer();
-        viewer.getView().setBackClipDistance(20.0f); // disappear beyond 20f 
-        if (mixer == null && viewer.getView().getUserHeadToVworldEnable()) {  
-        	mixer = new JOALMixer(viewer.getPhysicalEnvironment());
-			if (!mixer.initialize()) { // add audio device
-				System.out.println("Open AL failed to init");
-				viewer.getPhysicalEnvironment().setAudioDevice(null);
-			} 
-		} 
-	}
 
 	/* a function to build the content branch, including the fan and other environmental settings */
 	public static BranchGroup create_Scene() {
@@ -284,77 +263,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		
 		sceneTG.addChild(createRoom());                    // add the fan to the rotating 'sceneTG'
 
-		url = new URL[3];
-		// create all sounds; must be 3 in order for it to work
-		url[0] = Resources.getResource(fileFormat + "Sounds/" + "music.wav"); 
-        url[1] = Resources.getResource(fileFormat + "Sounds/" + "music2.wav");
-        url[2] = Resources.getResource(fileFormat + "Sounds/" + "music2.wav"); 
-
-		sound1 = new BackgroundSound();
-		sound2 = new PointSound();
-		sound3 = new PointSound();
-
-		// big mess of capability setting in order to get it to work somebody clean this up
-
-        sound1.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound1.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound1.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound1.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound1.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound1.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound1.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound1.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound1.setCapability(PointSound.ALLOW_LOOP_WRITE);
-		sound1.setCapability(PointSound.ALLOW_POSITION_WRITE);
-		sound1.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound1.setCapability(PointSound.ALLOW_MUTE_WRITE);
-		sound1.setCapability(PointSound.ALLOW_PAUSE_READ);
-		sound1.setCapability(PointSound.ALLOW_PAUSE_WRITE);
-
-		sound2.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound2.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound2.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound2.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound2.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound2.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound2.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound2.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound2.setCapability(PointSound.ALLOW_POSITION_WRITE);
-        sound2.setCapability(PointSound.ALLOW_LOOP_WRITE);
-		sound2.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound2.setCapability(PointSound.ALLOW_MUTE_WRITE);
-		sound2.setCapability(PointSound.ALLOW_PAUSE_READ);
-		sound2.setCapability(PointSound.ALLOW_PAUSE_WRITE);
-
-		sound3.setCapability(PointSound.ALLOW_MUTE_READ);
-		sound3.setCapability(PointSound.ALLOW_MUTE_WRITE);
-		sound3.setCapability(PointSound.ALLOW_PAUSE_READ);
-		sound3.setCapability(PointSound.ALLOW_PAUSE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_LOOP_WRITE);
-        sound3.setCapability(PointSound.ALLOW_ENABLE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_INITIAL_GAIN_WRITE);
-        sound3.setCapability(PointSound.ALLOW_SOUND_DATA_WRITE);
-        sound3.setCapability(PointSound.ALLOW_SCHEDULING_BOUNDS_WRITE);
-        sound3.setCapability(PointSound.ALLOW_CONT_PLAY_WRITE);
-        sound3.setCapability(PointSound.ALLOW_RELEASE_WRITE);
-        sound3.setCapability(PointSound.ALLOW_DURATION_READ);
-        sound3.setCapability(PointSound.ALLOW_IS_PLAYING_READ);
-        sound3.setCapability(PointSound.ALLOW_POSITION_WRITE);
-
-		// add sounds to Transform Group of the Scene
-		BoundingSphere soundBounds = new BoundingSphere(new Point3d(0.0,0.0,0.0), 100.0);
-        sound1.setSchedulingBounds(soundBounds);
-        sound2.setSchedulingBounds(soundBounds);
-        sound3.setSchedulingBounds(soundBounds);
-		sceneTG.addChild(sound1);
-		sceneTG.addChild(sound2);
-		sceneTG.addChild(sound3);
-
-		// Create a sound player
-		SimpleSoundsBehavior player = new SimpleSoundsBehavior(sound1, sound2, sound3, url[0], url[1], url[2], soundBounds);
-		player.setSchedulingBounds(soundBounds);
-
-		sceneTG.addChild(player);
 
 		sceneBG.addChild(sceneTG);                         // keep the following stationary
 		sceneBG.addChild(Commons.add_Lights(Commons.White, 1));
@@ -384,6 +292,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		canvas.addKeyListener(this);
 		pressed = false;
 		pressed_left = false;
+		initialSound();
 
 		// Set Strings for Textures:
 		floorNames = new String[4];
@@ -422,6 +331,15 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		frame.setSize(1920, 1080);                           // set the size of the JFrame
 		frame.setVisible(true);
 	}
+
+	public static void initialSound() {
+        soundJOAL = new SoundUtilityJOAL();
+        if (!soundJOAL.load("music", 0f, 0f, 10f, true))
+            System.out.println("Could not load " + "music");    
+        if (!soundJOAL.load("music2", 0f, 0f, 10f, true))
+            System.out.println("Could not load " + "music2");    
+        }
+
 
 	public static void main(String[] args) {
 		System.setProperty("jogl.disable.openglcore", System.getProperty("jogl.disable.openglcore", "false"));
@@ -564,21 +482,13 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 				}
 
 				else if(objectClicker.equals(temp3.obj_shape)){
-					if(flag == 0){
-						flag = 1;
-						enableAudio(su);
-					}
-					else if(flag == 1){
+					if(flag == 1){
 						flag = 2;
-						sound1.setPause(true);
-						sound2.setPause(true);
-						sound3.setPause(true);
+						soundJOAL.play("music");
 					}
 					else if(flag == 2){
 						flag = 1;
-						sound1.setPause(false);
-						sound2.setPause(false);
-						sound3.setPause(false);
+						soundJOAL.stop("music");
 					}
 				}
 
