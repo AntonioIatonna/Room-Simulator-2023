@@ -12,8 +12,6 @@ import com.jogamp.openal.ALException;
 import com.jogamp.openal.ALFactory;
 import com.jogamp.openal.util.ALut;
 
-
-
 public class SoundUtilityJOAL {
 	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 

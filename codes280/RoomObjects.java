@@ -121,14 +121,12 @@ public abstract class RoomObjects {
 		mtl.setEmissiveColor(mtl_clr[3]);                  // use it to enlighten a button
 		mtl.setLightingEnable(true);
 
-
 		app.setMaterial(mtl);                              // set appearance's material
 
 		obj_shape.setAppearance(app);                      // set object's appearance
 	}	
 
-	protected static Appearance makeTexture(String name)
-    {
+	protected static Appearance makeTexture(String name){
        Appearance          appearance;       
        ImageComponent2D    image;       
        Texture2D           texture;       
@@ -201,6 +199,7 @@ class TableObject extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class LeftSpeaker extends RoomObjects{
 	public LeftSpeaker() {
 		scale = 1.2d;                                        // use to scale up/down original size
@@ -227,6 +226,7 @@ class LeftSpeaker extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class RightSpeaker extends RoomObjects{
 	public RightSpeaker() {
 		scale = 1.2d;                                        // use to scale up/down original size
@@ -245,6 +245,7 @@ class RightSpeaker extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class tableMat extends RoomObjects{
 	public tableMat() {
 		scale = 1.0d;                                        // use to scale up/down original size
@@ -263,6 +264,7 @@ class tableMat extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class rightScreen extends RoomObjects{
 	public rightScreen() {
 		scale = 1.0d;                                        // use to scale up/down original size
@@ -289,6 +291,7 @@ class rightScreen extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class leftScreen extends RoomObjects{
 	public leftScreen() {
 		scale = 1.0d;                                        // use to scale up/down original size
@@ -315,8 +318,8 @@ class leftScreen extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class CPU extends RoomObjects{
-	
 	public CPU() {
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(0f,0f,0f);                   // use to move object for positioning  
@@ -342,6 +345,7 @@ class CPU extends RoomObjects{
 		objTG.addChild(nextTG);   
 	}
 }
+
 class Chair extends RoomObjects{
 	public Transform3D trfm;
 	public Chair() {
@@ -353,7 +357,6 @@ class Chair extends RoomObjects{
 	}
 	
 	public TransformGroup position_Object() {
-		
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 
 		translator.setTranslation(new Vector3f(1.2f, -2.0f,2.0f));
@@ -387,7 +390,6 @@ class Chair2 extends RoomObjects{
 	}
 	
 	public TransformGroup position_Object() {
-
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 		translator.setTranslation(new Vector3f(1.2f, 20.0f,2.4f));
 
@@ -414,14 +416,11 @@ class Chair3 extends RoomObjects{
 		scale = 1.0d;                                        // use to scale up/down original size
 		post = new Vector3f(1.0f,0f,0f);                   // use to move object for positioning  
 		transform_Object("Chair3");                      // set transformation to 'objTG' and load object file
-		mtl_clr[1] =  Commons.White; // set  color 		              
-		// app = makeTexture("chair_fabric.jpg");                               
+		mtl_clr[1] =  Commons.White; // set  color 		                                             
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 	
 	public TransformGroup position_Object() {
-
-
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
 		translator.setTranslation(new Vector3f(1.2f, 20.0f,2.8f));
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
@@ -531,7 +530,6 @@ class Pillow extends RoomObjects {
 		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
 		transform_Object("pillow");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = Commons.White; // set  color
-		// app = makeTexture("matress.jpg");
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 
@@ -559,7 +557,6 @@ class BedSheets extends RoomObjects {
 		post = new Vector3f(1.5f,1.9f,0f);                   // use to move object for positioning
 		transform_Object("sheets");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = Commons.Green; // set  color
-		// app = makeTexture("matress.jpg");
 		obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 
@@ -642,7 +639,6 @@ class tableWhiteMat extends RoomObjects{
 	}
 }
 
-
 class PictureFrame extends RoomObjects{
 	public PictureFrame() {
 		scale = 1.0d;                                        // use to scale up/down original size
@@ -671,12 +667,8 @@ class PictureFrame extends RoomObjects{
 		pic.addChild(new Box(0.35f,0.01f,0.55f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("picture1.jpg")));
 		add_Child(pic);
 
-	
-
 		return objTG;                                     
 	}
-
-
 
 	public Node getPicture(){
 		TransformGroup temp = (TransformGroup) objTG.getChild(1);
@@ -702,8 +694,6 @@ class Walls_Floors extends RoomObjects{
 		post = new Vector3f(0.0f,0f,0f);                   // use to move object for positioning  
 		transform_Object();                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = Commons.Brown; // set  color 		                                              
-		
-		// obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 	
 	public TransformGroup position_Object() {
@@ -767,8 +757,6 @@ class Walls_Floors extends RoomObjects{
 		wall2Blocker.setTransform(wall2Blocker_trsm);
 		wall2.addChild(wall2Blocker);
 		
-
-
 		wall2.addChild(new Box(depth, y, z, Primitive.GENERATE_TEXTURE_COORDS| Primitive.ENABLE_GEOMETRY_PICKING, makeTexture("wall2.jpg")));
 		wall2.setTransform(trsm_wall2);
 
@@ -776,63 +764,7 @@ class Walls_Floors extends RoomObjects{
         objBG.addChild(wall1);
         objBG.addChild(wall2);
 
-	
-		// makeRotations();                                 // set appearance after converting object node to Shape3D
-
 		return objTG;                                     
-	}
-
-
-
-	private void makeRotations(){
-		objRG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-
-		// Rotate Among Z-axis
-		Transform3D yAxis = new Transform3D();
-		yAxis.rotY(Math.PI / 2.0f);
-	
-		// rotationAlpha = new Alpha();
-		// rotationAlpha2 = new Alpha();
-
-
-		// // rotationAlpha.setLoopCount(1);
-
-		// rotationAlpha.setMode(Alpha.INCREASING_ENABLE);
-
-		// rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
-
-
-		// rotationAlpha.setIncreasingAlphaDuration(8000);
-
-		// // rotationAlpha.setIncreasingAlphaRampDuration(8000);
-		// // rotationAlpha.setAlphaAtOneDuration(4000);
-
-		// // rotationAlpha2 = new Alpha(-1, 8000);
-
-		// rotationAlpha2.setIncreasingAlphaDuration(8000);
-		// // rotationAlpha.setAlphaAtZeroDuration(4000);
-		// // rotationAlpha.setStartTime();
-		// // rotationAlpha.setDecreasingAlphaRampDuration(8000);
-
-
-		// // rotationAlpha.setStartTime(rotationAlpha.getStartTime() + 24000); 
-		// // rotationAlpha.
-		// // rotationAlpha2.setDecreasingAlphaDuration(8000);
-
-		// // rotationAlpha.setMode(Alpha.DECREASING_ENABLE);
-		// // rotationAlpha2.setMode(Alpha.INCREASING_ENABLE);
-	
-		// // Does 360 deg rotation 
-		// rotateInterpol = new RotationInterpolator(rotationAlpha, objRG, yAxis, 0.0f, (float) Math.PI * 2.0f);
-
-		// rotateInterpol2 = new RotationInterpolator(rotationAlpha2, objRG, yAxis, (float) Math.PI * 2.0f, 0.0f);
-		
-		// rotateInterpol2.setSchedulingBounds(new BoundingSphere());
-
-		// rotateInterpol.setSchedulingBounds(new BoundingSphere());
-
-		// objBG.addChild(rotateInterpol);
-		// objBG.addChild(rotateInterpol2);
 	}
 
 	public Node getFloor(){
@@ -881,9 +813,7 @@ class Radio extends RoomObjects{
 	public void add_Child(TransformGroup nextTG) {
 		objTG.addChild(nextTG);   
 	}
-
 }
-
 
 class FloatingShelf extends RoomObjects{
 	public FloatingShelf(){
@@ -916,21 +846,12 @@ class FloatingShelf extends RoomObjects{
 
 class Ball extends RoomObjects{
 	public Ball(){
-		// scale = 1.0d;                                        // use to scale up/down original size
-		// post = new Vector3f(0.0f,0.0f,0.0f);                   // use to move object for positioning
-		// transform_Object("floatingShelf");                      // set transformation to 'objTG' and load object file
 		mtl_clr[1] = Commons.Red; // set  color
-		// app = makeTexture("floor2.jpg");
-		// obj_Appearance();                                  // set appearance after converting object node to Shape3D
 	}
 
 	public TransformGroup position_Object() {
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		// translator.setTranslation(new Vector3f(-1.6f, -0.35f,3.7f));
-		// translator.setTranslation(new Vector3f(-1.6f, -2.8f,-0.5f));
 		translator.setTranslation(new Vector3f(0.0f,0.0f,0.0f));
-
-
 
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
 		rotator.rotY(0);
@@ -938,12 +859,10 @@ class Ball extends RoomObjects{
 		trfm.mul(translator);                              // apply translation next
 		trfm.mul(rotator);                                 // apply rotation first
 		objTG = new TransformGroup(trfm);
-		
 
 		// Transform Thing
 		Point3f[] points = new Point3f[19]; points[18] = new Point3f(-1.6f, -3.5f,-0.5f);
 		
-
 		float startZ = 3.7f;
 		for (int i = 0; i < 18; i++) {
 			float z = (float)(((startZ-(-0.5))/19)*i); 
@@ -958,14 +877,10 @@ class Ball extends RoomObjects{
 
 		TransformGroup baseTG = new TransformGroup(); // allow 'baseTG' to change
 		baseTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		// Alpha alpha = new Alpha(-1, Alpha.INCREASING_ENABLE | 
-		// Alpha.DECREASING_ENABLE, 0, 0, 0, 2000, 1000, 4000, 2000, 1000);
-
+		
 		Alpha alpha = new Alpha();
 
 		alpha.setLoopCount(-1);
-
-		// alpha.setPhaseDelayDuration(200);
 
 		alpha.setMode(Alpha.DECREASING_ENABLE | Alpha.INCREASING_ENABLE);
 		alpha.setIncreasingAlphaRampDuration(2500);
@@ -977,13 +892,9 @@ class Ball extends RoomObjects{
 		alpha.setAlphaAtOneDuration(0);
 		alpha.setAlphaAtZeroDuration(0);
 
-
 		Transform3D axis_t = new Transform3D();
 		PositionPathInterpolator positionPathInterpol = new PositionPathInterpolator(alpha, baseTG, axis_t, knots, points);
 		positionPathInterpol.setSchedulingBounds(new BoundingSphere());
-
-		
-
 		
 		Appearance app = new Appearance();
 		ColoringAttributes ca = new ColoringAttributes();
@@ -994,18 +905,14 @@ class Ball extends RoomObjects{
 		Sphere shape = new Sphere(0.1f, app);
 		baseTG.addChild(shape);    
 
-
 		CollisionDetectShapes cd = new CollisionDetectShapes(shape);
 		cd.setSchedulingBounds(Commons.twentyBS);        // detect column's collision
 
 		baseTG.addChild(cd);     
 
-		                       
-
 		objTG.addChild(baseTG);
 		objTG.addChild(positionPathInterpol);
 		objTG.addChild(objBG);                             // attach  to 'objTG'
-		
 		
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
 	}

@@ -45,7 +45,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			new Color3f(0.175000f, 0.175000f, 0.175000f),
 			new Color3f(0.000000f, 0.000000f, 0.000000f)};
 	
-
 	private static PickTool pickTool;
 	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 30;
@@ -137,11 +136,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		return appTemp;
 	}
 
+	/* function to create the room and place in all objects */
 	private static TransformGroup createRoom() {
 		TransformGroup roomTG = new TransformGroup();
 
 		Transform3D tableTex = new Transform3D();
-
 
 		roomObjects = new RoomObjects[OBJ_NUM];
 
@@ -156,6 +155,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		TransformGroup desktop_Items = new TransformGroup();
 		
+		/* initialzie all objects */
 		roomObjects[0] = new TableObject(); // for table
 		roomObjects[1] = new LeftSpeaker(); // left speaker
 		roomObjects[2] = new RightSpeaker(); // right speaker
@@ -163,44 +163,29 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[4] = new rightScreen(); // right screen
 		roomObjects[5] = new leftScreen(); // left screen
 		roomObjects[6] = new CPU(); // PC
-		roomObjects[7] = new Chair(); // chair
+		roomObjects[7] = new Chair(); // first chair tyle
 		roomObjects[8] = new tableWhiteMat(); // mouse mat
-
 		roomObjects[9] = new PictureFrame(); // picture frame
-
 		roomObjects[10] = new Walls_Floors(); // room itself
-
-		roomObjects[11] = new Chair2();
-
-		roomObjects[12] = new Chair3();
-
-		roomObjects[13] = new Radio();
-
-		roomObjects[14] = new Bed();
-
-		roomObjects[15] = new Shelf();
-
-		roomObjects[16] = new Door();
-
-		roomObjects[17] = new Matress();
-
-		roomObjects[18] = new Pillow();
-
-		roomObjects[19] = new BedSheets();
-
-		roomObjects[20] = new FloatingShelf();
-
-		roomObjects[21] = new Ball();
-
-
-
-
+		roomObjects[11] = new Chair2(); // second chair style
+		roomObjects[12] = new Chair3(); // third chair style
+		roomObjects[13] = new Radio(); // radio
+		roomObjects[14] = new Bed(); // bedframe
+		roomObjects[15] = new Shelf(); // standing shelf
+		roomObjects[16] = new Door(); // door
+		roomObjects[17] = new Matress(); // mattress
+		roomObjects[18] = new Pillow(); // pillow
+		roomObjects[19] = new BedSheets(); // bed sheets
+		roomObjects[20] = new FloatingShelf(); // floating shelf
+		roomObjects[21] = new Ball(); // ball
 
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.00f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
 		desktop_Items.setTransform(tableTex);
 		
+		/* create relationships between objects so a colection can be moved by modifying a single TransformGroup */
 		roomTG = roomObjects[10].position_Object(); // walls and floor
+		/* group desk items */
 		deskSetup.addChild(desktop_Items); // table texture
 		deskSetup.addChild(roomObjects[0].position_Object()); // table
 		deskSetup.addChild(roomObjects[1].position_Object()); // left speaker
@@ -211,10 +196,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		deskSetup.addChild(roomObjects[6].position_Object()); // PC
 		deskSetup.addChild(roomObjects[8].position_Object()); // mouse mat
 
-		roomObjects[10].add_Child(deskSetup);
+		roomObjects[10].add_Child(deskSetup); // add desk to room
 
+		/* for all other objects */
 		roomObjects[10].add_Child(roomObjects[7].position_Object()); // chair
-
 		roomObjects[10].add_Child(roomObjects[9].position_Object()); // picture frame
 		roomObjects[10].add_Child(roomObjects[11].position_Object()); // chair2
 		roomObjects[10].add_Child(roomObjects[12].position_Object()); // chair3
@@ -222,10 +207,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[10].add_Child(roomObjects[15].position_Object()); // shelf
 		roomObjects[10].add_Child(roomObjects[16].position_Object()); // door
 
+		/* for collision of objects */
 		roomObjects[10].add_Child(roomObjects[20].position_Object());
 		roomObjects[10].add_Child(roomObjects[21].position_Object());
 
-
+		/* for building bed */
 		TransformGroup bed_TG = new TransformGroup();
 		Transform3D bed_trsm = new Transform3D();
 		Transform3D bed_rot = new Transform3D();
@@ -238,38 +224,31 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		bed_trsm.mul(bed_rot);
 		bed_TG.setTransform(bed_trsm);
 
-
 		bed_TG.addChild(roomObjects[14].position_Object()); // bed frame
 		bed_TG.addChild(roomObjects[17].position_Object()); // matress
 		bed_TG.addChild(roomObjects[18].position_Object()); // pillow
 		bed_TG.addChild(roomObjects[19].position_Object()); // bed sheets
 
 		roomTG.addChild(bed_TG);
-		// calculate and set angles for rotation
+
+		// calculate and set angles for rotation of room
 		currAngle_L_R = Math.PI/2.0 * 3.0;
 		currAngle_U_D = 0;
 
-		// roomTG.addChild(player);
-
         return roomTG;
 	}
-
 
 	/* a function to build the content branch, including the fan and other environmental settings */
 	public static BranchGroup create_Scene() {
 		BranchGroup sceneBG = new BranchGroup();
 		TransformGroup sceneTG = new TransformGroup();	   // make 'sceneTG' continuously rotating
-		// sceneTG.addChild(Commons.rotate_Behavior(7500, sceneTG));
-		
+
 		sceneTG.addChild(createRoom());                    // add the fan to the rotating 'sceneTG'
-
-
 		sceneBG.addChild(sceneTG);                         // keep the following stationary
 		sceneBG.addChild(Commons.add_Lights(Commons.White, 1));
 
 		pickTool = new PickTool( sceneBG );                // allow picking of objects in 'sceneBG'
 		pickTool.setMode(PickTool.GEOMETRY);                 // pick by bounding volume
-
 
 		// Background Stuff:
 		Background myBackground = new Background(); 
@@ -283,7 +262,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		return sceneBG;
 	}
 
-	/* NOTE: Keep the constructor for each of the labs and assignments */
+	/* Default Constructor */
 	public RoomSimulator(BranchGroup sceneBG) {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 		canvas = new Canvas3D(config);
@@ -323,7 +302,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		Commons.define_Viewer(su, new Point3d(15.00d, 10.0d, 15.0d));   // set the viewer's location
 		
-		// sceneBG.addChild(Commons.key_Navigation(su));               // allow key navigation
 		sceneBG.compile();		                           // optimize the BranchGroup
 		su.addBranchGraph(sceneBG);                        // attach the scene to SimpleUniverse
 		setLayout(new BorderLayout());
@@ -332,15 +310,14 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		frame.setVisible(true);
 	}
 
+	/* function to initialize sound at program start */
 	public static void initialSound() {
         soundJOAL = new SoundUtilityJOAL();
         if (!soundJOAL.load("music", 0f, 0f, 10f, true))
-            System.out.println("Could not load " + "music");    
-        if (!soundJOAL.load("music2", 0f, 0f, 10f, true))
-            System.out.println("Could not load " + "music2");    
-        }
+            System.out.println("Could not load " + "music");        
+    }
 
-
+	/* main method */
 	public static void main(String[] args) {
 		System.setProperty("jogl.disable.openglcore", System.getProperty("jogl.disable.openglcore", "false"));
 		frame = new JFrame("Room Simulator");                   
@@ -348,10 +325,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
+	/* function to change the appearance an textures of an object */
 	public static void changeAppearance(Appearance app, String fileName){
-		ImageComponent2D    image;       
-		Texture2D           texture;       
-		TextureLoader       textureLoader;
+		ImageComponent2D image;       
+		Texture2D texture;       
+		TextureLoader textureLoader;
 		
 		// Load the image
 		textureLoader = new TextureLoader(fileFormat + "Images/" + fileName, null);
@@ -360,15 +338,17 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		// Create the Texture
 		texture = new Texture2D(Texture.BASE_LEVEL, Texture.RGBA, image.getWidth(), image.getHeight());
 		texture.setImage(0, image);  // Level 0 indicates no mip-mapping
+
 		// Create the Appearance
 		app.setTexture(texture);
 	}
 	
+	/* function to control all mouse click behaviour */
 	@Override
 	public void mouseClicked(MouseEvent event) {
 		int x = event.getX(); int y = event.getY();        // mouse coordinates
 		Point3d point3d = new Point3d(), center = new Point3d();
-		canvas.getPixelLocationInImagePlate(x, y, point3d);// obtain AWT pixel in ImagePlate coordinates
+		canvas.getPixelLocationInImagePlate(x, y, point3d); // obtain AWT pixel in ImagePlate coordinates
 		canvas.getCenterEyeInImagePlate(center);           // obtain eye's position in IP coordinates
 		
 		Transform3D transform3D = new Transform3D();       // matrix to relate ImagePlate coordinates~
@@ -387,9 +367,10 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 			Shape3D objectClicker = (Shape3D) pickResult.getNode(PickResult.SHAPE3D);
 
+			/* create instance of known clickable objcts to compare clicked object to */
 			Walls_Floors temp = (Walls_Floors) roomObjects[10];
 			PictureFrame temp2 = (PictureFrame) roomObjects[9];
-			
+
 			Radio temp3 = (Radio) roomObjects[13];
 			Chair chair1 = (Chair) roomObjects[7];
 			Chair2 chair2 = (Chair2) roomObjects[11];
@@ -397,30 +378,30 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 			BedSheets bed_sheets = (BedSheets) roomObjects[19];
 			
-			// System.out.println(objectClicker);
+			/* behaviour based on what is clicked for non shape3D objects*/
 			if(clicked != null){
-				System.out.println(clicked);
-				if(clicked.equals(temp.getFloor())){
+				if(clicked.equals(temp.getFloor())){ // if floor
 					Box trsm = (Box) temp.getFloor();
 					currentFloor++;
 					changeAppearance(trsm.getAppearance(), floorNames[currentFloor % 4]);
 				}
-				if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){
+				else if(clicked.equals(temp.getWall1()) || clicked.equals(temp.getWall2())){ // if wall
 					Box trsm1 = (Box) temp.getWall1();
 					Box trsm2 = (Box) temp.getWall2();
 					currentWall++;
 					changeAppearance(trsm1.getAppearance(), wallNames[currentWall % 4]);
 					changeAppearance(trsm2.getAppearance(), wallNames[currentWall % 4]);
 				}
-				else if(clicked.equals(temp2.getPicture())){
+				else if(clicked.equals(temp2.getPicture())){ // if picture
 					Box trsm = (Box) temp2.getPicture();
 					currentPicture++;
 					changeAppearance(trsm.getAppearance(), pictureNames[currentPicture % 7]);
 				}
 			}
 			
+			/* behaviour based on what is clicked for shape3D objects*/
 			if(objectClicker != null){
-				if(objectClicker.equals(chair1.obj_shape)){
+				if(objectClicker.equals(chair1.obj_shape)){ // if chair1
 					TransformGroup chair1_TG = chair1.getTG();
 					TransformGroup chair2_TG = chair2.getTG();
 
@@ -436,8 +417,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					moveObjectLR(roomObjects[10].getTG(), 0.05);
 					moveObjectLR(roomObjects[10].getTG(), -0.05);
 				}
-
-				else if(objectClicker.equals(chair2.obj_shape)){
+				else if(objectClicker.equals(chair2.obj_shape)){ // if chair2
 					TransformGroup chair2_TG = chair2.getTG();
 					TransformGroup chair3_TG = chair3.getTG();
 
@@ -453,12 +433,9 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					moveObjectLR(roomObjects[10].getTG(), 0.05);
 					moveObjectLR(roomObjects[10].getTG(), -0.05);
 				}
-
-				else if(objectClicker.equals(chair3.obj_shape)){
+				else if(objectClicker.equals(chair3.obj_shape)){ // if chair3
 					TransformGroup chair3_TG = chair3.getTG();
 					TransformGroup chair1_TG = chair1.getTG();
-					// TransformGroup chair2_TG = chair2.getTG();
-
 
 					Transform3D chair3_trsm = chair3.trfm;
 					chair3_trsm.setTranslation(new Vector3f(1.2f, 20.0f,2.8f));
@@ -471,17 +448,8 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 					chair1_TG.setTransform(chair1_trsm);
 					moveObjectLR(roomObjects[10].getTG(), 0.05);
 					moveObjectLR(roomObjects[10].getTG(), -0.05);
-
-
-
-					// Transform3D chair2_trsm = chair2.trfm;
-					// chair2_trsm.setTranslation(new Vector3f(1.2f, -1.7f,2.4f));
-
-					// chair2_TG.setTransform(chair2_trsm);
-
 				}
-
-				else if(objectClicker.equals(temp3.obj_shape)){
+				else if(objectClicker.equals(temp3.obj_shape)){ // if radio
 					if(flag == 1){
 						flag = 2;
 						soundJOAL.play("music");
@@ -491,8 +459,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 						soundJOAL.stop("music");
 					}
 				}
-
-				else if(objectClicker.equals(bed_sheets.obj_shape)){
+				else if(objectClicker.equals(bed_sheets.obj_shape)){ // if bed
 					Random rd = new Random(); 
 					Appearance app = new Appearance();
 					Material mtl = new Material();                     // define material's attributes
@@ -511,65 +478,24 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 	}
 
-	public void mouseEntered(MouseEvent arg0) { }
-	public void mouseExited(MouseEvent arg0) { }
-	public void mousePressed(MouseEvent e) { }
-	public void mouseReleased(MouseEvent e) { }
-
-
 	public static void moveObjectLR(TransformGroup trsm, double angle){
 		Transform3D temp = new Transform3D();
 
-		// Transform3D tx = new Transform3D();
 		Transform3D ty = new Transform3D();
-		// Transform3D tz = new Transform3D();
 
 		currAngle_L_R += angle;
-		// currAngle_U_D += angle;
 
 		if(currAngle_L_R >= Math.PI*2.0){
 			currAngle_L_R -= Math.PI*2.0;
 		}
 
-		// tx.rotX(currAngle_U_D);
-		// temp.mul(tx);
-
 		ty.rotY(currAngle_L_R);
 		temp.mul(ty);
-
-		// tz.rotZ(currAngle_U_D);
-		// temp.mul(tz);
 
 		trsm.setTransform(temp);
 	}
 
-	// public static void moveObjectUD(TransformGroup trsm, double angle){
-	// 	Transform3D temp = new Transform3D();
-
-
-	// 	Transform3D tx = new Transform3D();
-	// 	Transform3D ty = new Transform3D();
-	// 	Transform3D tz = new Transform3D();
-
-	// 	// currAngle_L_R += angle;
-	// 	currAngle_U_D += angle;
-
-	// 	if(currAngle_U_D >= Math.PI*2.0){
-	// 		currAngle_U_D -= Math.PI*2.0;
-	// 	}
-
-	// 	// tx.rotX(currAngle_U_D);
-	// 	// temp.mul(tx);
-
-	// 	ty.rotY(currAngle_L_R);
-	// 	temp.mul(ty);
-
-	// 	// tz.rotZ(currAngle_U_D);
-	// 	// temp.mul(tz);
-
-	// 	trsm.setTransform(temp);
-	// }
-
+	/* function to control all key pressed behaviour */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
@@ -589,6 +515,11 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 	}
 
+	/* unimplemente abstract methods */
+	public void mouseEntered(MouseEvent arg0) { }
+	public void mouseExited(MouseEvent arg0) { }
+	public void mousePressed(MouseEvent e) { }
+	public void mouseReleased(MouseEvent e) { }
 	public void keyReleased(KeyEvent e) {}
 	public void keyTyped(KeyEvent e) {}
 }
