@@ -1,4 +1,5 @@
-package FinalProject.ModellingThe3DWorld.codes280;
+// package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import com.jogamp.openal.util.ALut;
 
 
 public class SoundUtilityJOAL {
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 
 	private final static String SOUND_DIR = fileFormat + "Sounds/";
 	// where the WAV files are located

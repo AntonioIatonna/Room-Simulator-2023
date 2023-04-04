@@ -2,8 +2,8 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+// package FinalProject.ModellingThe3DWorld.codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -47,7 +47,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 	
 
 	private static PickTool pickTool;
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 30;
 
 	static Boolean pressed;

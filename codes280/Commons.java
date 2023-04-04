@@ -3,7 +3,8 @@ Make your changes in that folder and once you have tested and are ready to commi
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
 
-package FinalProject.ModellingThe3DWorld.codes280;
+// package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
@@ -15,12 +16,9 @@ import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.Canvas3D;
-import org.jogamp.java3d.GeometryArray;
-import org.jogamp.java3d.IndexedLineArray;
 import org.jogamp.java3d.Material;
 import org.jogamp.java3d.PointLight;
 import org.jogamp.java3d.RotationInterpolator;
-import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.java3d.utils.behaviors.keyboard.KeyNavigatorBehavior;

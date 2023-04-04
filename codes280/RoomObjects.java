@@ -2,41 +2,28 @@
 Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codesAI280;
+// package FinalProject.ModellingThe3DWorld.codes280;
 
-import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Shape;
 import java.io.FileNotFoundException;
-
-import javax.xml.soap.Text;
 
 import org.jogamp.java3d.Alpha;
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
-import org.jogamp.java3d.Bounds;
 import org.jogamp.java3d.BranchGroup;
 import org.jogamp.java3d.ColoringAttributes;
 import org.jogamp.java3d.ImageComponent2D;
-import org.jogamp.java3d.Light;
 import org.jogamp.java3d.Material;
 import org.jogamp.java3d.Node;
-import org.jogamp.java3d.PointLight;
-import org.jogamp.java3d.PolygonAttributes;
 import org.jogamp.java3d.PositionPathInterpolator;
 import org.jogamp.java3d.RotationInterpolator;
 import org.jogamp.java3d.Shape3D;
-import org.jogamp.java3d.TexCoordGeneration;
 import org.jogamp.java3d.Texture;
 import org.jogamp.java3d.Texture2D;
 import org.jogamp.java3d.TextureAttributes;
-import org.jogamp.java3d.TextureUnitState;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
-import org.jogamp.java3d.TransformInterpolator;
-import org.jogamp.java3d.TransparencyAttributes;
 import org.jogamp.java3d.loaders.IncorrectFormatException;
 import org.jogamp.java3d.loaders.ParsingErrorException;
 import org.jogamp.java3d.loaders.Scene;
@@ -50,9 +37,8 @@ import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Point3f;
 import org.jogamp.vecmath.Vector3f;
 
-
 // This is where our objects will go:
-                            // use 'post' to specify location
+// use 'post' to specify location
 
 public abstract class RoomObjects {
 	protected Alpha rotationAlpha;                           // NOTE: keep for future use
@@ -71,7 +57,7 @@ public abstract class RoomObjects {
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
 	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
 	
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -140,8 +126,6 @@ public abstract class RoomObjects {
 
 		obj_shape.setAppearance(app);                      // set object's appearance
 	}	
-
-	
 
 	protected static Appearance makeTexture(String name)
     {
