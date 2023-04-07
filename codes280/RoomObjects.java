@@ -1,13 +1,6 @@
-/* Change the package to the location where you are running the code (same folder as labs and assignments).
-Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
-the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
-*/
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codes280;
 
 import java.io.FileNotFoundException;
-
-import javax.xml.crypto.dsig.Transform;
 
 import org.jogamp.java3d.Alpha;
 import org.jogamp.java3d.AmbientLight;
@@ -58,8 +51,7 @@ public abstract class RoomObjects {
 	protected double scale;                                // use 'scale' to define scaling
 	protected Vector3f post;                              // use 'post' to specify location
 	protected Shape3D obj_shape;
-	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codes280/"; // change this variable to whatever the file system requires on your computer
 
 	public abstract TransformGroup position_Object();      // need to be defined in derived classes
 	public abstract void add_Child(TransformGroup nextTG);
@@ -202,7 +194,6 @@ class TableObject extends RoomObjects{
 	}
 }
 
-
 class Window extends RoomObjects{
 	public Transform3D trfm;
 	public Window() {
@@ -215,19 +206,10 @@ class Window extends RoomObjects{
 	}
 
 	public TransformGroup position_Object() {
-
-
 		Transform3D translator = new Transform3D();        // 4x4 matrix for translation
-		// translator.setTranslation(new Vector3f(0f, 10.0f,2.8f));
 		translator.setTranslation(new Vector3f(1.0f, 0.1f,4.0f));
 
-
-
-
-		// translator.setTranslation(new Vector3f(0f, -1.0f,2.8f));
-
 		Transform3D rotator = new Transform3D();           // 4x4 matrix for rotation
-		// rotator.rotZ(Math.PI /2 );
 		rotator.rotX(Math.PI / 2);
 		trfm = new Transform3D();              // 4x4 matrix for composition
 		trfm.mul(translator);                              // apply translation next
@@ -245,8 +227,6 @@ class Window extends RoomObjects{
 		objTG.addChild(innerWindow);                          // attach  to 'objTG'
 		return objTG;                                      // use 'objTG' to attach  to the previous TG
 	}
-
-
 
 	public void add_Child(TransformGroup nextTG) {
 		objTG.addChild(nextTG);

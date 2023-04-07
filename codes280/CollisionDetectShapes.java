@@ -1,7 +1,5 @@
 /* Copyright material for students taking COMP-2800 to work on assignment/labs/projects. */
-
-package FinalProject.ModellingThe3DWorld.codes280;
-// package codesAI280;
+package codes280;
 
 import java.util.Iterator;
 
@@ -13,8 +11,6 @@ import org.jogamp.java3d.WakeupOnCollisionEntry;
 import org.jogamp.java3d.WakeupOnCollisionExit;
 import org.jogamp.java3d.utils.geometry.Sphere;
 import org.jogamp.vecmath.Color3f;
-
-// import FinalProject.ModellingThe3DWorld.codes280.Commons;
 
 /* This behavior of collision detection highlights the
     object when it is in a state of collision. */
@@ -48,12 +44,11 @@ public class CollisionDetectShapes extends Behavior {
 
 		if (inCollision) { // change color to highlight 'shape'
 			shapeAppearance.setColoringAttributes(highlight);
-
 			wakeupOn(wExit); // keep the color until no collision
-		} else { // change color back to its original
+		} 
+		else { // change color back to its original
 			shapeAppearance.setColoringAttributes(shapeColoring);
 			wakeupOn(wEnter); // wait for collision happens
-			
 		}
 	}
 }

@@ -1,13 +1,7 @@
-/* Change the package to the location where you are running the code (same folder as labs and assignments).
-Make your changes in that folder and once you have tested and are ready to commit changes, copy and paste the files into
-the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
-*/
-// package codesAI280;
-package FinalProject.ModellingThe3DWorld.codes280;
+package codes280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
-import java.io.FileNotFoundException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -15,10 +9,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import org.jogamp.java3d.*;
-import org.jogamp.java3d.loaders.IncorrectFormatException;
-import org.jogamp.java3d.loaders.ParsingErrorException;
-import org.jogamp.java3d.loaders.Scene;
-import org.jogamp.java3d.loaders.objectfile.ObjectFile;
 
 import org.jogamp.java3d.utils.geometry.Box;
 import org.jogamp.java3d.utils.geometry.Primitive;
@@ -46,8 +36,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 			new Color3f(0.000000f, 0.000000f, 0.000000f)};
 	
 	private static PickTool pickTool;
-	// private static String fileFormat = "codesAI280/"; // change this variable to whatever the file system requires on your computer
-	private static String fileFormat = "FinalProject/ModellingThe3DWorld/codes280/"; // change this variable to whatever the file system requires on your computer
+	private static String fileFormat = "codes280/"; // change this variable to whatever the file system requires on your computer
     private static final int OBJ_NUM = 30;
 
 	static Boolean pressed;
@@ -91,24 +80,6 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		
 		// Return image
 		return tt_State;
-	}
-	
-	private static Scene loadShape(String obj_name) {
-		ObjectFile f = new ObjectFile(ObjectFile.RESIZE, (float) (60 * Math.PI / 180.0));
-		Scene s = null;
-		try {                                              // load object's definition file to 's'
-			s = f.load(fileFormat + "Objects/" + obj_name + ".obj");
-		} catch (FileNotFoundException e) {
-			System.err.println(e);
-			System.exit(1);
-		} catch (ParsingErrorException e) {
-			System.err.println(e);
-			System.exit(1);
-		} catch (IncorrectFormatException e) {
-			System.err.println(e);
-			System.exit(1);
-		}
-		return s;                                          // return the object shape in 's'
 	}
 	
 	/* a function to create the Room
@@ -168,34 +139,18 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		roomObjects[8] = new tableWhiteMat(); // mouse mat
 		roomObjects[9] = new PictureFrame(); // picture frame
 		roomObjects[10] = new Walls_Floors(); // room itself
-
-		roomObjects[11] = new Chair2();
-
-		roomObjects[12] = new Chair3();
-
-		roomObjects[13] = new Radio();
-
-		roomObjects[14] = new Bed();
-
-		roomObjects[15] = new Shelf();
-
-		roomObjects[16] = new Door();
-
-		roomObjects[17] = new Matress();
-
-		roomObjects[18] = new Pillow();
-
-		roomObjects[19] = new BedSheets();
-
-		roomObjects[20] = new FloatingShelf();
-
-		roomObjects[21] = new Ball();
-
-		roomObjects[22] = new Window();
-
-
-
-
+		roomObjects[11] = new Chair2(); // second chair style
+		roomObjects[12] = new Chair3(); // third chair style
+		roomObjects[13] = new Radio(); // radio
+		roomObjects[14] = new Bed(); // bedframe
+		roomObjects[15] = new Shelf(); // standing shelf
+		roomObjects[16] = new Door(); // door
+		roomObjects[17] = new Matress(); // mattress
+		roomObjects[18] = new Pillow(); // pillow
+		roomObjects[19] = new BedSheets(); // bed sheets
+		roomObjects[20] = new FloatingShelf(); // floating shelf
+		roomObjects[21] = new Ball(); // ball
+		roomObjects[22] = new Window(); // window
 
 		tableTex.setTranslation(new Vector3f(-1.2f,-0.5f,3.00f));
 		desktop_Items.addChild(new Box(0.5f, 0.01f, 1.2f, Primitive.GENERATE_TEXTURE_COORDS, makeTexture("table.jpg")));
@@ -231,8 +186,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 
 		roomObjects[10].add_Child(roomObjects[22].position_Object());
 
-
-
+		/* for building bed */
 		TransformGroup bed_TG = new TransformGroup();
 		Transform3D bed_trsm = new Transform3D();
 		Transform3D bed_rot = new Transform3D();
@@ -536,7 +490,7 @@ public class RoomSimulator extends JPanel implements MouseListener, KeyListener{
 		}
 	}
 
-	/* unimplemente abstract methods */
+	/* unimplemented abstract methods */
 	public void mouseEntered(MouseEvent arg0) { }
 	public void mouseExited(MouseEvent arg0) { }
 	public void mousePressed(MouseEvent e) { }
