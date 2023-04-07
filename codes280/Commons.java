@@ -3,8 +3,8 @@ Make your changes in that folder and once you have tested and are ready to commi
 the repository folder, replacing the old ones. Please make sure previously working code is not broken before you commit changes
 */
 
-// package FinalProject.ModellingThe3DWorld.codes280;
-package codesAI280;
+package FinalProject.ModellingThe3DWorld.codes280;
+// package codesAI280;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsConfiguration;
